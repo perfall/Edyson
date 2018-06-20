@@ -19,7 +19,7 @@ def create_spectrogram(sound_file, X, y):
     
     sound = AudioSegment.from_wav(sound_file)
     if len(sound)*(int(X)/1000) <= PIXEL_LIMIT: # max pixel limit
-        command = "sox "+ sound_file + " -n spectrogram -l -r -m -w Dolph -y " + y + " -X " + X + " -o " + spec_file
+        command = "sox "+ sound_file + " -n spectrogram -l -r -m -w Hamming -y " + y + " -X " + X + " -o " + spec_file
         subprocess.call(command.split())
         return spec_file
 
@@ -44,7 +44,7 @@ def create_spectrogram(sound_file, X, y):
         sound_chunk.export("sound_chunks/" + chunk_file + ".wav", format="wav")
         
         # Create spectrogram chop
-        command = "sox sound_chunks/"  + chunk_file + ".wav -n spectrogram -l -r -m -w Dolph -y " + y + " -X " + X + " -o spec_chunks/" + chunk_file + ".png"
+        command = "sox sound_chunks/"  + chunk_file + ".wav -n spectrogram -l -r -m -w Hamming -y " + y + " -X " + X + " -o spec_chunks/" + chunk_file + ".png"
         subprocess.call(command.split())
 
         # Remember filenames for concatenation later

@@ -1,0 +1,5 @@
+*.pyc
+venv
+.DS_Store
+web/uploads
+web/static/data

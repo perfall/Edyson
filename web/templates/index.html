@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>TDA</title>
+        <link rel="stylesheet" type="text/css" href="static/css/style.css">
+        <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="static/js/main.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css">
+        
+    </head>
+    <body>
+        <div class="container">
+            <div class="jumbotron">
+                <h1>Temporally Disassasembled Audio</h1>
+                <h5>Explore your audio through TDA, an approach that present your data in a more efficient manner.</h5>
+            </div>
+            <h5>Upload your audio</h5>
+            
+            <form action = "visualizer" method="POST" enctype=multipart/form-data>
+                <div class="form-group">
+                    <input type=file name=file>            
+                </div>
+            <h5>Set parameters</h5>
+            <form action = "http://localhost:5000/visualizer" method="POST">
+            <div id="algorithmParameter">
+                <p class="font-weight-bold">Algorithm</p>
+                <div class="pretty p-default p-round">
+                    <input type="radio" name="radio1" value="tsne">
+                    <div class="state">
+                        <label>t-SNE</label>
+                    </div>
+                </div>
+                <div class="pretty p-default p-round">
+                    <input type="radio" name="radio1" value="som"disabled>
+                    <div class="state">
+                        <label>Self-organizing maps</label>
+                    </div>
+                </div>
+                <div class="pretty p-default p-round">
+                    <input type="radio" name="radio1" value="pca" disabled>
+                    <div class="state">
+                        <label>PCA</label>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div id="dimensionalityParameter">
+                <p class="font-weight-bold">Output dimensionality</p>
+                <div class="pretty p-default p-round">
+                    <input type="radio" name="radio2" value="2d">
+                    <div class="state">
+                        <label>2D</label>
+                    </div>
+                </div>
+                <div class="pretty p-default p-round">
+                    <input type="radio" name="radio2" value="3d" disabled>
+                    <div class="state">
+                        <label>3D</label>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div id="sizeParameter">
+                <p class="font-weight-bold">Segment size</p>
+                <div class="pretty p-default p-round">
+                    <input type="radio" name="radio3" value="25">
+                    <div class="state">
+                        <label>25ms</label>
+                    </div>
+                </div>
+                <div class="pretty p-default p-round">
+                    <input type="radio" name="radio3" value="50">
+                    <div class="state">
+                        <label>50ms</label>
+                    </div>
+                </div>
+                <div class="pretty p-default p-round">
+                    <input type="radio" name="radio3" value="100">
+                    <div class="state">
+                        <label>100ms</label>
+                    </div>
+                </div>
+                <div class="pretty p-default p-round">
+                    <input type="radio" name="radio3" value="250">
+                    <div class="state">
+                        <label>250ms</label>
+                    </div>
+                </div>
+                <div class="pretty p-default p-round">
+                    <input type="radio" name="radio3" value="500">
+                    <div class="state">
+                        <label>500ms</label>
+                    </div>
+                </div>
+                <div class="pretty p-default p-round">
+                    <input type="radio" name="radio3" value="1000">
+                    <div class="state">
+                        <label>1000ms</label>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div id="featureParameter">
+                <p class="font-weight-bold">Features</p>
+                <div class="pretty p-default p-round">
+                    <input type="radio" name="radio4" value="spectrogram">
+                    <div class="state">
+                        <label>Spectrogram</label>
+                    </div>
+                </div>
+                <div class="pretty p-default p-round">
+                    <input type="radio" name="radio4" value="mfcc" disabled>
+                    <div class="state">
+                        <label>MFCC</label>
+                    </div>
+                </div>
+            </div>
+            <br><br>
+            <input type="submit" class="btn btn-info" value="Process audio">
+          </form>
+            
+        </div>
+    </body>
+</html>

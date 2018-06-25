@@ -9,9 +9,17 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css">
         
+        <script type="text/javascript">
+            function showLoadingGif(){
+                $("#loading").show()
+                $("#content").hide()
+            }
+        </script>
+
     </head>
     <body>
-        <div class="container">
+        <div id="loading"></div>
+        <div class="container" id="content">
             <div class="jumbotron">
                 <h1>Temporally Disassasembled Audio</h1>
                 <h5>Explore your audio with unsupervised machine learning</h5>
@@ -118,7 +126,7 @@
                 </div>
             </div>
             <br><br>
-            <input type="submit" class="btn btn-info" value="Process audio">
+            <input type="submit" class="btn btn-info" value="Process audio" onclick="showLoadingGif()">
           </form>
             
         </div>

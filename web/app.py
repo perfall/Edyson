@@ -46,22 +46,19 @@ def visualizer() -> str:
                 print(file.filename + " saved")
             else:
                 print("File extension not allowed")
-                return "<h3>File extension not allowed. Please use WAV.</h3>"
+                return "<h3>File extension not allowed. Please use WAV, one channel.</h3>"
     
     algorithm = request.form['radio1']
     dimensionality = request.form['radio2']
     segment_size = request.form['radio3']
     features = request.form['radio4']
-    print(algorithm)
-    print(dimensionality)
-    print(segment_size)
-    print(features)
-    #subprocess.call('python ../python/audio2spec.py uploads static/data/test', shell=True)
-    audio2spec.main(str(1000), str(65), segment_size, "uploads/" + session_id, "static/data/" + session_id, manual_segment=False)
+    
+    pix_per_sec = {"25":"4000", "50":"2000", "100":"1000", "250":"400", "500":"200", "1000":"100"}
+    audio2spec.main(pix_per_sec[segment_size], str(65), segment_size, "uploads/" + session_id, "static/data/" + session_id, manual_segment=False)
     cluster = spec2map.Cluster()
     spec_path, sound_path = "static/data/" + session_id + "/spectrograms/", "static/data/" + session_id + "/sounds/"
     cluster.train_tsne(spec_path, sound_path, 100)
-    # subprocess.call('python ../python/spec2map.py tsne ../data/test', shell=True)
+    
     return render_template('visualizer.html', path="static/data/" + session_id)
 
 

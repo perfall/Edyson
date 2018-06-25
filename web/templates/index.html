@@ -31,7 +31,6 @@
                     <input type=file name=file>            
                 </div>
             <h5>Set parameters</h5>
-            <form action = "http://localhost:5000/visualizer" method="POST">
             <div id="algorithmParameter">
                 <p class="font-weight-bold">Algorithm</p>
                 <div class="pretty p-default p-round">
@@ -125,10 +124,16 @@
                     </div>
                 </div>
             </div>
-            <br><br>
-            <input type="submit" class="btn btn-info" value="Process audio" onclick="showLoadingGif()">
+            <br>
+            <input type="submit" id="submitNewAudio" class="btn btn-info" value="Process audio" onclick="showLoadingGif()">
           </form>
-            
+          <br><br>
+          <h5>Have a key?</h5>
+            <form action="visualizebykey" method="POST" enctype=multipart/form-data>
+                <input type=number name="sessionKey" placeholder="E.g. 152991...">
+                <br><br>
+                <input type="submit" class="btn btn-info" value="Submit" onclick="showLoadingGif()">
+          </form>
         </div>
     </body>
 </html>

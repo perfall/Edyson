@@ -6,19 +6,15 @@
 
     </head>
     <body>
-        <h1>SeeYourSound</h1>
+        <h3>Session key (save for later): {{session_key}}</h3>
         <div id="floatingCircle"></div>
         <div id="scatter"></div>
         <script src="//code.jquery.com/jquery-1.12.4.js"></script>
         <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.6.7/d3-tip.js">   </script>
-        <select id="fileSelector">
-        </select>
 
         <script>
-            // var fileName = "/static/data/test/output.csv";
-            // var soundDir = "/static/data/test/sounds/";
             var fileName = '{{path}}' + "/output.csv";
             var soundDir = '{{path}}' + "/sounds/";
             $('#floatingCircle').css({'visibility': '' + 'visible'});

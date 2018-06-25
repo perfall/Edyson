@@ -16,8 +16,8 @@ function validate() {
 
   console.log(radiosWithValues);
   if (radiosWithValues == 4) {
-    $("input[type=submit]").prop("disabled", false);
+    $("input[id=submitNewAudio]").prop("disabled", false);
   } else {
-    $("input[type=submit]").prop("disabled", true);
+    $("input[id=submitNewAudio]").prop("disabled", true);
   }
 }

@@ -105,21 +105,25 @@
                         //$(".axis").effect("shake");
                         //console.log(d[fname]);
 
-                        data.forEach(function(dp) {
-                            dist = Math.sqrt((d.x - dp.x)*(d.x - dp.x) + (d.y - dp.y)*(d.y - dp.y));
-                            //b2 = (d.y - dp.y)*(d.y - dp.y);
-                            //c = Math.sqrt(a2+b2); 
-                            //console.log(dp.x, dp.y, c);
-                            // if(dist<5){
+                        closest_points = get_closest_points(d, data, 10)
+                        console.log(closest_points)
+       //                  data.forEach(function(dp) {
+       //                      dist = Math.sqrt((d.x - dp.x)*(d.x - dp.x) + (d.y - dp.y)*(d.y - dp.y));
+							// // console.log(dist);
+       // //                      console.log(soundDir + dp[fname] + ".wav");
+       //                      //b2 = (d.y - dp.y)*(d.y - dp.y);
+       //                      //c = Math.sqrt(a2+b2); 
+       //                      //console.log(dp.x, dp.y, c);
+       //                      // if(dist<5){
                                 
-                            //     	//console.log(d.x, d.y, " and ", dp.x, dp.y);
-                            //     	console.log(dp[fname])
-                            //     	var snd = new Audio(soundDir + dp[fname] + ".wav"); // buffers automatically when created
-                            //     	setTimeout(function() {playSound(snd);}, 2000);
-                            //     	//snd.play();
-                            //     //sleep(20);
-                            // }
-                        });
+       //                      //     	//console.log(d.x, d.y, " and ", dp.x, dp.y);
+       //                      //     	console.log(dp[fname])
+       //                      //     	var snd = new Audio(soundDir + dp[fname] + ".wav"); // buffers automatically when created
+       //                      //     	setTimeout(function() {playSound(snd);}, 2000);
+       //                      //     	//snd.play();
+       //                      //     //sleep(20);
+       //                      // }
+       //                  });
 
                         console.log(soundDir + d[fname] + ".wav");
                         var snd = new Audio(soundDir + d[fname] + ".wav"); // buffers automatically when created
@@ -330,6 +334,19 @@
                                 return y(d[yCat]);
                             }
                         })
+                }
+
+                function get_closest_points(targetPoint, allPoints, k) {
+                	var pointsAndDistances = []
+                        allPoints.forEach(function(point) {
+                            dist = Math.sqrt((targetPoint.x - point.x)*(targetPoint.x - point.x) + (targetPoint.y - point.y)*(targetPoint.y - point.y));
+                            pointsAndDistances.push({
+							    dist:   dist,
+							    fileName: soundDir + point[fname] + ".wav"
+							});
+                        });
+                        pointsAndDistances.sort(function (x, y) { return x.dist - y.dist || x.fileName - y.fileName; });
+    					return pointsAndDistances.splice(0, k);
                 }
             });
             

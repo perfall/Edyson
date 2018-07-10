@@ -346,7 +346,7 @@
 							});
                         });
                         pointsAndDistances.sort(function (x, y) { return x.dist - y.dist || x.fileName - y.fileName; });
-    					return pointsAndDistances.splice(0, k);
+    					return pointsAndDistances.splice(1, k+1);
                 }
             });
             

@@ -3,22 +3,63 @@
     <head>
         <meta charset="UTF-8">
         <title>TDA</title>
-        <link rel="stylesheet" type="text/css" href="static/css/style.css">
-        <script src="//code.jquery.com/jquery.min.js"></script>
-        <script src="static/js/main.js"></script>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css">
-        
+        <link rel="stylesheet" type="text/css" href={{ url_for('static', filename='css/style.css') }}>
+        <script src="//code.jquery.com/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
         <script type="text/javascript">
             function showLoadingGif(){
                 $("#loading").show()
                 $("#content").hide()
             }
-        </script>
 
+            function activateProcessButton(){
+                console.log("hej");
+                $("input[id=submitNewAudio]").prop("disabled", false);
+            }
+
+        </script>
     </head>
     <body>
         <div id="loading"></div>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="navbar-brand" href="#">TDA</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" style='color:white' href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" style='color:white' href="#">Documentation</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" style='color:white' href="https://github.com/perfall/Temporally-Disassembled-Audio">GitHub</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" style='color:white' href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Examples
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <h6 class="dropdown-header">Speech</h6>
+                        <a class="dropdown-item" href="/1537974097559005">Donald Trump, state of the union speech ~1h. Segment size: 1000ms Step size: 1000ms</a>
+                        <a class="dropdown-item" href="/1537974510373329">Nelson Klein, old Swedish recording ~1h. Segment size: 1000ms Step size: 1000ms</a>
+                        <a class="dropdown-item" href="/15380354025784261">Bible, old testamente ~1h. Segment size: 1000ms Step size: 1000ms</a>
+                        <a class="dropdown-item" href="/15380609347825658">Tester, ~15 000 points</a>
+                        <div class="dropdown-divider"></div>
+                        <h6 class="dropdown-header">Music</h6>
+                        <a class="dropdown-item" href="/1538036173545738">Ambient music, ~1h. Segment size: 1000ms Step size: 1000ms</a>
+                    </div>
+                </li>
+            </ul>
+
+            <form class="form-inline my-2 my-lg-0" action="goByKey" method="POST" enctype=multipart/form-data>
+                <input class="form-control mr-sm-2" name="id" type="search" placeholder="Enter id" aria-label="Search">
+                <button class="btn btn-outline my-sm-0" type="submit">Go</button>
+            </form>
+        </nav>
         <div class="container" id="content">
             <div class="jumbotron">
                 <h1>Temporally Disassasembled Audio</h1>
@@ -26,83 +67,93 @@
             </div>
             <h5>Upload your audio</h5>
             
-            <form action = "visualizer" method="POST" enctype=multipart/form-data>
+            <!-- <form action = "visualizer" method="POST" enctype=multipart/form-data> -->
+            <form action = "process_audio" method="POST" enctype=multipart/form-data>
                 <div class="form-group">
-                    <input type=file name=file>            
+                    <input id="uploadButton" type=file name=file onclick="activateProcessButton()">            
                 </div>
+            <br>
             <h5>Set parameters</h5>
-            <div id="algorithmParameter">
-                <p class="font-weight-bold">Algorithm</p>
-                <div class="pretty p-default p-round">
-                    <input type="radio" name="radio1" value="tsne">
-                    <div class="state">
-                        <label>t-SNE</label>
-                    </div>
-                </div>
-                <div class="pretty p-default p-round">
-                    <input type="radio" name="radio1" value="som"disabled>
-                    <div class="state">
-                        <label>Self-organizing maps</label>
-                    </div>
-                </div>
-                <div class="pretty p-default p-round">
-                    <input type="radio" name="radio1" value="pca" disabled>
-                    <div class="state">
-                        <label>PCA</label>
-                    </div>
-                </div>
-            </div>
-            <br>
-            <div id="dimensionalityParameter">
-                <p class="font-weight-bold">Output dimensionality</p>
-                <div class="pretty p-default p-round">
-                    <input type="radio" name="radio2" value="2d">
-                    <div class="state">
-                        <label>2D</label>
-                    </div>
-                </div>
-                <div class="pretty p-default p-round">
-                    <input type="radio" name="radio2" value="3d" disabled>
-                    <div class="state">
-                        <label>3D</label>
-                    </div>
-                </div>
-            </div>
-            <br>
             <div id="sizeParameter">
                 <p class="font-weight-bold">Segment size</p>
                 <div class="pretty p-default p-round">
-                    <input type="radio" name="radio3" value="25">
+                    <input type="radio" name="radio1" value="25">
                     <div class="state">
                         <label>25ms</label>
                     </div>
                 </div>
                 <div class="pretty p-default p-round">
-                    <input type="radio" name="radio3" value="50">
+                    <input type="radio" name="radio1" value="50">
                     <div class="state">
                         <label>50ms</label>
                     </div>
                 </div>
                 <div class="pretty p-default p-round">
-                    <input type="radio" name="radio3" value="100">
+                    <input type="radio" name="radio1" value="100">
                     <div class="state">
                         <label>100ms</label>
                     </div>
                 </div>
                 <div class="pretty p-default p-round">
-                    <input type="radio" name="radio3" value="250">
+                    <input type="radio" name="radio1" value="250">
                     <div class="state">
                         <label>250ms</label>
                     </div>
                 </div>
                 <div class="pretty p-default p-round">
-                    <input type="radio" name="radio3" value="500">
+                    <input type="radio" name="radio1" value="500">
                     <div class="state">
                         <label>500ms</label>
                     </div>
                 </div>
                 <div class="pretty p-default p-round">
-                    <input type="radio" name="radio3" value="1000">
+                    <input type="radio" name="radio1" value="1000" checked>
+                    <div class="state">
+                        <label>1000ms</label>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div id="stepParameter">
+                <p class="font-weight-bold">Step size</p>
+                <div class="pretty p-default p-round">
+                    <input type="radio" name="radio2" value="10">
+                    <div class="state">
+                        <label>10ms</label>
+                    </div>
+                </div>
+                <div class="pretty p-default p-round">
+                    <input type="radio" name="radio2" value="25">
+                    <div class="state">
+                        <label>25ms</label>
+                    </div>
+                </div>
+                <div class="pretty p-default p-round">
+                    <input type="radio" name="radio2" value="50">
+                    <div class="state">
+                        <label>50ms</label>
+                    </div>
+                </div>
+                <div class="pretty p-default p-round">
+                    <input type="radio" name="radio2" value="100">
+                    <div class="state">
+                        <label>100ms</label>
+                    </div>
+                </div>
+                <div class="pretty p-default p-round">
+                    <input type="radio" name="radio2" value="250">
+                    <div class="state">
+                        <label>250ms</label>
+                    </div>
+                </div>
+                <div class="pretty p-default p-round">
+                    <input type="radio" name="radio2" value="500">
+                    <div class="state">
+                        <label>500ms</label>
+                    </div>
+                </div>
+                <div class="pretty p-default p-round">
+                    <input type="radio" name="radio2" value="1000" checked>
                     <div class="state">
                         <label>1000ms</label>
                     </div>
@@ -112,27 +163,20 @@
             <div id="featureParameter">
                 <p class="font-weight-bold">Features</p>
                 <div class="pretty p-default p-round">
-                    <input type="radio" name="radio4" value="spectrogram">
-                    <div class="state">
-                        <label>Spectrogram</label>
-                    </div>
-                </div>
-                <div class="pretty p-default p-round">
-                    <input type="radio" name="radio4" value="mfcc" disabled>
+                    <input type="radio" name="radio3" value="MFCC.conf" checked>
                     <div class="state">
                         <label>MFCC</label>
                     </div>
                 </div>
+                <div class="pretty p-default p-round">
+                    <input type="radio" name="radio3" value="MFCCZ.conf">
+                    <div class="state">
+                        <label>MFCC (normalized by mean)</label>
+                    </div>
+                </div>
             </div>
             <br>
-            <input type="submit" id="submitNewAudio" class="btn btn-info" value="Process audio" onclick="showLoadingGif()">
-          </form>
-          <br><br>
-          <h5>Have a key?</h5>
-            <form action="visualizebykey" method="POST" enctype=multipart/form-data>
-                <input type=number name="sessionKey" placeholder="E.g. 152991...">
-                <br><br>
-                <input type="submit" class="btn btn-info" value="Submit" onclick="showLoadingGif()">
+            <input type="submit" id="submitNewAudio" class="btn btn-info" value="Process audio" onclick="showLoadingGif()" disabled>
           </form>
         </div>
     </body>

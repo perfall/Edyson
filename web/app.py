@@ -1,23 +1,25 @@
 # -*- coding: utf-8 -*-
 import os
 
-from flask import Flask, render_template, request, flash, redirect, url_for
+from flask import Flask, render_template, request, flash, redirect
 from werkzeug.utils import secure_filename
 import subprocess
 import sys
 sys.path.append("../python")
 sys.path.append("..")
-import audio2spec
-import spec2map
 import time
+import audio_processing
+from flask import send_file
+import csv
 
-UPLOAD_FOLDER = 'uploads/'
-ALLOWED_EXTENSIONS = set(['wav'])
+UPLOAD_FOLDER = 'static/uploads/'
+ALLOWED_EXTENSIONS = set(['wav', 'mp3'])
 
 app = Flask(__name__)
 app.secret_key = 'hejhej00'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+# Checks so file is allowed
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -27,8 +29,12 @@ def upload_file():
     #subprocess.call('rm /uploads/*', shell=True)
     return render_template('index.html')
 
-@app.route('/visualizer', methods=['POST'])
-def visualizer() -> str:
+# When audio is submitted, checks so audio is valid, uploads it, and sends parameters
+# to audio_processing which in turn generates files needed for browser, then 
+# redirects and loads browser.
+@app.route('/process_audio', methods=['GET', 'POST'])
+def process_audio() -> str:
+    # Check so audio file is included and valid
     if request.method == 'POST':
         if 'file' not in request.files:
             flash('No file part')
@@ -41,35 +47,56 @@ def visualizer() -> str:
             if file and allowed_file(file.filename):
                 session_key = str(time.time()).split(".")[0] + str(time.time()).split(".")[1]
                 filename = secure_filename(file.filename)
-                subprocess.call('mkdir uploads/' + session_key, shell=True)
+                subprocess.call(['mkdir', UPLOAD_FOLDER + session_key])
+                print('mkdir ' +  UPLOAD_FOLDER + session_key)
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], session_key + "/" + filename))
                 print(file.filename + " saved")
             else:
                 print("File extension not allowed")
-                return "<h3>File extension not allowed. Please use WAV, one channel.</h3>"
+                return "<h3>File extension not allowed. Please use WAV or MP3.</h3>"
     
-    algorithm = request.form['radio1']
-    dimensionality = request.form['radio2']
-    segment_size = request.form['radio3']
-    features = request.form['radio4']
-    
-    pix_per_sec = {"25":"4000", "50":"2000", "100":"1000", "250":"400", "500":"200", "1000":"100"}
-    audio2spec.main(pix_per_sec[segment_size], str(65), segment_size, "uploads/" + session_key, "static/data/" + session_key, manual_segment=False)
-    cluster = spec2map.Cluster()
-    spec_path, sound_path = "static/data/" + session_key + "/spectrograms/", "static/data/" + session_key + "/sounds/"
-    cluster.train_tsne(spec_path, sound_path, 100)
-    
-    return render_template('visualizer.html', path="static/data/" + session_key, session_key=session_key)
+    segment_size = float(request.form['radio1'])
+    step_size = float(request.form['radio2'])
+    config_file = request.form['radio3']
 
-@app.route('/visualizebykey', methods=['POST'])
-def visualize_by_key() -> str:
+    audio_processing.main(session_key, config_file, segment_size, step_size)
+    
+    return redirect("/"+session_key)
+
+# Triggered when searching by key, if key exists go to load_browser()
+@app.route('/goByKey', methods=['POST'])
+def goByKey() -> str:
     if request.method == 'POST':
-        session_key = request.form['sessionKey']
-        if os.path.isdir('static/data/' + session_key):
-            return render_template('visualizer.html', path="static/data/" + session_key, session_key=session_key) 
+        session_key = request.form['id']
+        data_dir = "static/data/" + session_key + "/"
+        if os.path.isdir(data_dir):
+            return redirect("/"+session_key)
         else:
             return "<h3>Not a valid key.</h3>"
 
+# Loads audio browser by session_key
+@app.route('/<string:session_key>', methods=['GET', 'POST'])
+def load_browser(session_key) -> str:
+    data_dir = "static/data/" + session_key + "/"
+    print(data_dir)
+    if os.path.isdir(data_dir):
+        with open(data_dir + "data.csv", "r") as f:
+            reader = csv.reader(f, skipinitialspace=True)
+            header = next(reader)
+            data = [{k: v for k, v in zip(header, line)} for line in reader]
+                
+        with open(data_dir + "metadata.csv", "r") as f:
+            reader = csv.reader(f, skipinitialspace=True)
+            header = next(reader)
+            metadata = [{k: v for k, v in zip(header, line)} for line in reader][0]
+        return render_template('audioBrowser.html', 
+                                data=data, 
+                                audioDuration=metadata["audio_duration"], 
+                                segmentSize=metadata["segment_size"], 
+                                session_key=session_key, 
+                                audioPath="../" + metadata["audio_path"])
+    else:
+        return "<h3>Something went wrong, the files for the this audio session does not exist</h3>"
 
 if __name__ == '__main__':
     #app.run(debug=True)

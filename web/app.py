@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 
-from flask import Flask, render_template, request, flash, redirect
+from flask import Flask, render_template, request, flash, redirect, jsonify
 from werkzeug.utils import secure_filename
 import subprocess
 import sys
@@ -11,6 +11,7 @@ import time
 import audio_processing
 from flask import send_file
 import csv
+import json
 
 UPLOAD_FOLDER = 'static/uploads/'
 ALLOWED_EXTENSIONS = set(['wav', 'mp3'])
@@ -64,6 +65,28 @@ def process_audio() -> str:
     return redirect("/"+session_key)
 
 # Triggered when searching by key, if key exists go to load_browser()
+@app.route('/retrain', methods=['POST'])
+def retrain() -> str:
+    print("INSIDE RETRAIN")
+    if request.method == 'POST':
+        valid_points = json.loads(request.form['validPoints'])
+        old_session_key = request.form['sessionKey']
+        filename = request.form['audioPath'].split("/")[-1]
+        segment_size = float(request.form['segmentSize'])
+        step_size = float(request.form['stepSize'])
+        
+        
+        new_session_key = str(time.time()).split(".")[0] + str(time.time()).split(".")[1]
+    
+        subprocess.call(['mkdir', UPLOAD_FOLDER + new_session_key])
+        subprocess.call(['cp', UPLOAD_FOLDER + old_session_key + "/" + filename, UPLOAD_FOLDER + new_session_key + "/" + filename])
+
+        audio_processing.retrain(valid_points, new_session_key, old_session_key, segment_size, step_size)
+        return jsonify(dict(redirect='/' + new_session_key))
+    return ''
+        
+
+# Triggered when searching by key, if key exists go to load_browser()
 @app.route('/goByKey', methods=['POST'])
 def goByKey() -> str:
     if request.method == 'POST':
@@ -92,7 +115,9 @@ def load_browser(session_key) -> str:
         return render_template('audioBrowser.html', 
                                 data=data, 
                                 audioDuration=metadata["audio_duration"], 
-                                segmentSize=metadata["segment_size"], 
+                                segmentSize=metadata["segment_size"],
+                                stepSize=metadata["step_size"],
+                                datapoints=len(data),
                                 session_key=session_key, 
                                 audioPath="../" + metadata["audio_path"])
     else:

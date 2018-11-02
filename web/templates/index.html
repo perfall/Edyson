@@ -46,11 +46,19 @@
                         <h6 class="dropdown-header">Speech</h6>
                         <a class="dropdown-item" href="/1537974097559005">Donald Trump, state of the union speech ~1h. Segment size: 1000ms Step size: 1000ms</a>
                         <a class="dropdown-item" href="/1537974510373329">Nelson Klein, old Swedish recording ~1h. Segment size: 1000ms Step size: 1000ms</a>
+                        <a class="dropdown-item" href="/15384657614690912">Nelson Klein, ~10min.</a>
                         <a class="dropdown-item" href="/15380354025784261">Bible, old testamente ~1h. Segment size: 1000ms Step size: 1000ms</a>
                         <a class="dropdown-item" href="/15380609347825658">Tester, ~15 000 points</a>
+                        <a class="dropdown-item" href="/1538392316232363">Isca medalist</a>
+                        <a class="dropdown-item" href="/15383927662605581">Isca medalist, small</a>
+                        <a class="dropdown-item" href="/15384834277662258">Isca medalist, 50/25, mfcc-norm</a>
+                        <a class="dropdown-item" href="/1538568353258615">Gustav Karlsson ~5min, 100/50, mfcc-norm</a>
+                        <a class="dropdown-item" href="/15385687602075908">Gustav Karlsson ~5min, 100/50, mfcc</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="/1538745329258014">Eva breathing, mfcc</a>
                         <div class="dropdown-divider"></div>
                         <h6 class="dropdown-header">Music</h6>
-                        <a class="dropdown-item" href="/1538036173545738">Ambient music, ~1h. Segment size: 1000ms Step size: 1000ms</a>
+                        <a class="dropdown-item" href="/1538036173545738">Ambient music, ~1h. Segment size: 1000ms Step size: 1000ms</a>                        
                     </div>
                 </li>
             </ul>
@@ -65,7 +73,7 @@
                 <h1>Temporally Disassasembled Audio</h1>
                 <h5>Explore your audio with unsupervised machine learning</h5>
             </div>
-            <h5>Upload your audio</h5>
+            <h5>Upload your audio (wav or mp3)</h5>
             
             <!-- <form action = "visualizer" method="POST" enctype=multipart/form-data> -->
             <form action = "process_audio" method="POST" enctype=multipart/form-data>
@@ -158,6 +166,24 @@
                         <label>1000ms</label>
                     </div>
                 </div>
+                <div class="pretty p-default p-round">
+                    <input type="radio" name="radio2" value="2500">
+                    <div class="state">
+                        <label>2500ms</label>
+                    </div>
+                </div>
+                <div class="pretty p-default p-round">
+                    <input type="radio" name="radio2" value="5000">
+                    <div class="state">
+                        <label>5000ms</label>
+                    </div>
+                </div>
+                <div class="pretty p-default p-round">
+                    <input type="radio" name="radio2" value="10000">
+                    <div class="state">
+                        <label>10000ms</label>
+                    </div>
+                </div>
             </div>
             <br>
             <div id="featureParameter">
@@ -172,6 +198,24 @@
                     <input type="radio" name="radio3" value="MFCCZ.conf">
                     <div class="state">
                         <label>MFCC (normalized by mean)</label>
+                    </div>
+                </div>
+                <div class="pretty p-default p-round">
+                    <input type="radio" name="radio3" value="PLP.conf">
+                    <div class="state">
+                        <label>PLP</label>
+                    </div>
+                </div>
+                <div class="pretty p-default p-round">
+                    <input type="radio" name="radio3" value="PLPZ.conf">
+                    <div class="state">
+                        <label>PLPz</label>
+                    </div>
+                </div>
+                <div class="pretty p-default p-round">
+                    <input type="radio" name="radio3" value="f0test.conf">
+                    <div class="state">
+                        <label>F0</label>
                     </div>
                 </div>
             </div>

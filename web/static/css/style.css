@@ -18,8 +18,9 @@ svg {
     width: 120px;
     height: 120px;
     visibility: hidden;
-    z-index: -1;
-    opacity: 0.75;
+    /*z-index: -1;*/
+    /*opacity: 0.75;*/
+    /*background-image: radial-gradient(black, white);*/
 }
 
 #loading {
@@ -33,6 +34,11 @@ svg {
     background: url(../loading.gif) no-repeat;
     cursor: wait;
     }
+
+#loading-sm {
+    width: 100px;
+    height: auto;
+}
 
 .container-fluid {
     height: 100%;
@@ -60,6 +66,10 @@ svg {
 
 .top-buffer-sm {
     margin-top:25px; 
+}
+
+.top-buffer-xs {
+    margin-top:5px; 
 }
 
 .side-buffer {
@@ -119,4 +129,95 @@ audio::-webkit-media-controls-time-remaining-display {
 
 audio::-webkit-media-controls-timeline {
     padding: 0px;
+}
+
+/*Slider settings:*/
+
+.slidecontainer {
+    width: 100%; /* Width of the outside container */
+}
+
+/* The slider itself */
+.slider {
+    -webkit-appearance: none;  /* Override default CSS styles */
+    appearance: none;
+    width: 100%; /* Full-width */
+    height: 10px; /* Specified height */
+    background: #d3d3d3; /* Grey background */
+    outline: none; /* Remove outline */
+    opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+    -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+    transition: opacity .2s;
+    border-radius: 34px;
+}
+
+/* Mouse-over effects */
+.slider:hover {
+    opacity: 1; /* Fully shown on mouse-over */
+}
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */ 
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    width: 20px; /* Set a specific slider handle width */
+    height: 20px; /* Slider handle height */
+    background: #3F729B; /* Green background */
+    cursor: pointer; /* Cursor on hover */
+    border-radius: 34px;
+}
+
+.slider::-moz-range-thumb {
+    width: 20px; /* Set a specific slider handle width */
+    height: 20px; /* Slider handle height */
+    background: #3F729B; /* Green background */
+    cursor: pointer; /* Cursor on hover */
+}
+
+#graphics {
+    background: #3F729B; /* Green background */
+    border-radius: 34px;
+    height: 200px; /* Slider handle height */
+}
+
+
+/*More button colors*/
+.btn-warning {
+  color: white !important;
+}
+
+.btn-cat1 {
+  background-color: purple;
+  color: white !important;
+}
+.btn-cat1:hover,
+.btn-cat1:focus {
+  background-color: purple;
+}
+
+.btn-cat2 {
+  background-color: orange;
+  color: white !important;
+}
+.btn-cat2:hover,
+.btn-cat2:focus {
+  background-color: orange;
+}
+
+.btn-cat3 {
+  background-color: teal;
+  color: white !important;
+}
+.btn-cat3:hover,
+.btn-cat3:focus {
+  background-color: teal;
+}
+
+.btn-cat4 {
+  background-color: brown;
+  color: white !important;
+}
+.btn-cat4:hover,
+.btn-cat4:focus {
+  background-color: brown;
 }

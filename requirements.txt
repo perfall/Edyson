@@ -7,8 +7,12 @@ Flask-Dropzone==1.4.4
 Flask-WTF==0.14.2
 itsdangerous==0.24
 Jinja2==2.10
+llvmlite==0.25.0
 MarkupSafe==1.0
 marshmallow==2.15.6
+MiniSom==2.0.0
+MulticoreTSNE==0.1
+numba==0.40.1
 numpy==1.14.5
 Pillow==5.1.0
 pycparser==2.19
@@ -16,5 +20,6 @@ pydub==0.22.1
 scikit-learn==0.19.1
 scipy==1.1.0
 sklearn==0.0
+umap-learn==0.3.6
 Werkzeug==0.14.1
 WTForms==2.1

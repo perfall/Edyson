@@ -38,9 +38,15 @@
                         Examples
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    	<h6 class="dropdown-header">Demos</h6>
+                        <a class="dropdown-item" href="/1542635376120841">Bd_1697A_m16, kvinna intervju</a>
+                        <a class="dropdown-item" href="/1542637551725332">Gustav Karlsson, 100/50</a>
+                        <a class="dropdown-item" href="/1542638172634069">Bd_1698_m16, man intervju</a>
+                        <a class="dropdown-item" href="/1542640010556535">Nelson klein, 3h 1000/1000</a>
+                        <a class="dropdown-item" href="/15427073855052109">Nelson klein, 1h 1000/1000</a>
                         <h6 class="dropdown-header">Speech</h6>
-                        <a class="dropdown-item" href="/1537974097559005">Donald Trump, state of the union speech ~1h. Segment size: 1000ms Step size: 1000ms</a>
-                        <a class="dropdown-item" href="/1537974510373329">Nelson Klein, old Swedish recording ~1h. Segment size: 1000ms Step size: 1000ms</a>
+                        <a class="dropdown-item" href="/1542117607126045">Donald Trump, state of the union speech ~1h. Segment size: 1000ms Step size: 1000ms</a>
+                        <a class="dropdown-item" href="/154115026407875">Nelson Klein, old Swedish recording ~1h. Segment size: 1000ms Step size: 1000ms</a>
                         <a class="dropdown-item" href="/15384657614690912">Nelson Klein, ~10min.</a>
                         <a class="dropdown-item" href="/15380354025784261">Bible, old testamente ~1h. Segment size: 1000ms Step size: 1000ms</a>
                         <a class="dropdown-item" href="/15380609347825658">Tester, ~15 000 points</a>
@@ -49,6 +55,7 @@
                         <a class="dropdown-item" href="/15384834277662258">Isca medalist, 50/25, mfcc-norm</a>
                         <a class="dropdown-item" href="/1538568353258615">Gustav Karlsson ~5min, 100/50, mfcc-norm</a>
                         <a class="dropdown-item" href="/15385687602075908">Gustav Karlsson ~5min, 100/50, mfcc</a>
+                        <a class="dropdown-item" href="/1542363964108663">Nelson Klein, all, sampled 1/10 1000ms</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="/1538745329258014">Eva breathing, mfcc</a>
                         <div class="dropdown-divider"></div>
@@ -131,6 +138,7 @@
 						<button type="button" value="tsne" class="btn btn-block btn-dark top-buffer-sm btn-sm">t-SNE</button>
 		                <button type="button" value="pca" class="btn btn-block btn-dark top-buffer-sm btn-sm">PCA</button>
 		                <button type="button" value="som" class="btn btn-block btn-dark top-buffer-sm btn-sm">SOM</button>
+		                <button type="button" value="umap" class="btn btn-block btn-dark top-buffer-sm btn-sm">UMAP</button>
 		            </div>
 	                <hr>
 	                <h6>Cursor</h6>
@@ -151,6 +159,31 @@
 	                <div id="buttonGroup4">
 	                	<button type="button" value="csv" class="btn btn-block btn-dark top-buffer-sm btn-sm">CSV</button>
 		            </div>
+		            <hr>
+	                <h6>Sequential playback</h6>
+	                <div id="buttonGroup6">
+	                	<button type="button" value ="play" class="btn btn-block btn-dark top-buffer-sm btn-sm">Play</button>
+	                	<button type="button" value ="pause" class="btn btn-block btn-dark top-buffer-sm btn-sm">Pause</button>
+	                	<button type="button" value ="stop" class="btn btn-block btn-dark top-buffer-sm btn-sm">Stop</button>
+		            </div>
+		            <hr>
+		            <h6>Median filter value</h6>
+	                <div id="medianFilterValueBox">
+	                	<input type="number" id="medianfilterValue" value=2>
+	                	<!-- <button type="button" value="csv" class="btn btn-dark btn-sm">Go</button> -->
+
+	                	<!-- <div id="medianfilterValue" class="dropdown">
+						 	<button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						    Medianfilter value
+							</button>
+							<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+								<a class="dropdown-item" value="1" checked>1</a>
+						    	<a class="dropdown-item" value="5">5</a>
+						    	<a class="dropdown-item" value="10">10</a>
+						    	<a class="dropdown-item" value="25">25</a>
+						  	</div>
+						</div> -->
+		            </div>
 		            
 	                
 	                
@@ -160,7 +193,7 @@
 	            </div>
 			</div>
 			<div class="col-sm-10">
-				<svg><text id="loadText" x="50%" y="50%" text-anchor="middle" opacity="0.8" fill="black" font-size="100px" font-family="Arial" dy=".2em" style="display:none">Loading..</text></svg>	
+				<svg id="map"><text id="loadText" x="50%" y="50%" text-anchor="middle" opacity="0.8" fill="black" font-size="100px" font-family="Arial" dy=".2em" style="display:none">Loading..</text></svg>	
 			</div>
 			<div class="col-sm-1">
 				<div id="metadata">
@@ -205,20 +238,24 @@
 			</div>
 		</div>
 		<div class="row side-buffer top-buffer-sm" id="row2">
-			<div class="col">
-				<div id="timeline">
-					<span id="timeBarDuration" style="display:none"></span>
-				</div>
-			</div>
+			<svg id="sequenceMap">
+				<rect id="timeBar"></rect>
+				<span id="timeBarDuration" class="unSelectableText"></span>
+			</svg>
 		</div>
-		<div class="row top-buffer-sm" id="row3">
-			
+		<div class="row side-buffer top-buffer-sm" id="row3">
+			<svg id="graphMap"></svg>
+		</div>
+		<audio id="audioBar"controls controlsList="nodownload" style="display:none">
+	  		<source src="{{audioPath}}">
+		</audio>
+		<!-- <div class="row top-buffer-sm" id="row3">
 			<div class="col">
 				<audio id="audioBar"controls controlsList="nodownload">
 			  		<source src="{{audioPath}}">
 				</audio>
 			</div>
-		</div>
+		</div> -->
 	</div>
 	<script type="text/javascript">
 		// Define variables passed from app.py, they are used in js-file

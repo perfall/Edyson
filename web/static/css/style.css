@@ -7,9 +7,17 @@ html, body {
     height: 100%;
 }
 
-svg {
+#map {
     width: 100%;
     height: 100%;
+}
+
+#sequenceMap {
+    width: 100%;
+}
+
+#graphMap {
+    width: 100%;
 }
 
 #floatingCircle {
@@ -88,17 +96,6 @@ svg {
     width: : 100%;
     z-index: 1;
 }
-
-/*#timeBarTemplate {
-    position: static;
-    background-color: black;
-    height: 100%;
-    width: 0.5%;
-    left: 60%;
-    border-radius: 25%;
-    opacity: 0.8;
-    display: none;
-}*/
 
 a {
     /*color: white;*/
@@ -180,6 +177,19 @@ audio::-webkit-media-controls-timeline {
     height: 200px; /* Slider handle height */
 }
 
+.unSelectableText {
+    cursor: none;
+   -moz-user-select: -moz-none;
+   -khtml-user-select: none;
+   -webkit-user-select: none;
+
+   /*
+     Introduced in IE 10.
+     See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+   */
+   -ms-user-select: none;
+   user-select: none;
+}
 
 /*More button colors*/
 .btn-warning {

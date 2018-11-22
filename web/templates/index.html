@@ -43,9 +43,15 @@
                         Examples
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <h6 class="dropdown-header">Demos</h6>
+                        <a class="dropdown-item" href="/1542635376120841">Bd_1697A_m16, kvinna intervju</a>
+                        <a class="dropdown-item" href="/1542637551725332">Gustav Karlsson, 100/50</a>
+                        <a class="dropdown-item" href="/1542638172634069">Bd_1698_m16, man intervju</a>
+                        <a class="dropdown-item" href="/1542640010556535">Nelson klein, 3h 1000/1000</a>
+                        <a class="dropdown-item" href="/15427073855052109">Nelson klein, 1h 1000/1000</a>
                         <h6 class="dropdown-header">Speech</h6>
-                        <a class="dropdown-item" href="/1537974097559005">Donald Trump, state of the union speech ~1h. Segment size: 1000ms Step size: 1000ms</a>
-                        <a class="dropdown-item" href="/1537974510373329">Nelson Klein, old Swedish recording ~1h. Segment size: 1000ms Step size: 1000ms</a>
+                        <a class="dropdown-item" href="/1542117607126045">Donald Trump, state of the union speech ~1h. Segment size: 1000ms Step size: 1000ms</a>
+                        <a class="dropdown-item" href="/154115026407875">Nelson Klein, old Swedish recording ~1h. Segment size: 1000ms Step size: 1000ms</a>
                         <a class="dropdown-item" href="/15384657614690912">Nelson Klein, ~10min.</a>
                         <a class="dropdown-item" href="/15380354025784261">Bible, old testamente ~1h. Segment size: 1000ms Step size: 1000ms</a>
                         <a class="dropdown-item" href="/15380609347825658">Tester, ~15 000 points</a>
@@ -54,6 +60,7 @@
                         <a class="dropdown-item" href="/15384834277662258">Isca medalist, 50/25, mfcc-norm</a>
                         <a class="dropdown-item" href="/1538568353258615">Gustav Karlsson ~5min, 100/50, mfcc-norm</a>
                         <a class="dropdown-item" href="/15385687602075908">Gustav Karlsson ~5min, 100/50, mfcc</a>
+                        <a class="dropdown-item" href="/1542363964108663">Nelson Klein, all, sampled 1/10 1000ms</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="/1538745329258014">Eva breathing, mfcc</a>
                         <div class="dropdown-divider"></div>
@@ -70,7 +77,7 @@
         </nav>
         <div class="container" id="content">
             <div class="jumbotron">
-                <h1>Temporally Disassasembled Audio</h1>
+                <h1>Temporally Disassembled Audio</h1>
                 <h5>Explore your audio with unsupervised machine learning</h5>
             </div>
             <h5>Upload your audio (wav or mp3)</h5>
@@ -218,9 +225,27 @@
                         <label>F0</label>
                     </div>
                 </div>
+                <div class="pretty p-default p-round">
+                    <input type="radio" name="radio3" value="speaker_trait.conf">
+                    <div class="state">
+                        <label>Speaker trait</label>
+                    </div>
+                </div>
+                <div class="pretty p-default p-round">
+                    <input type="radio" name="radio3" value="speaker_trait_compat.conf">
+                    <div class="state">
+                        <label>Speaker trait compat</label>
+                    </div>
+                </div>
+                <div class="pretty p-default p-round">
+                    <input type="radio" name="radio3" value="emobase2010.conf">
+                    <div class="state">
+                        <label>Emotion features</label>
+                    </div>
+                </div>
             </div>
             <br>
-            <input type="submit" id="submitNewAudio" class="btn btn-info" value="Process audio" onclick="showLoadingGif()" disabled>
+            <input type="submit" id="submitNewAudio" class="btn btn-info" value="Process audio" onclick="showLoadingGif()">
           </form>
         </div>
     </body>

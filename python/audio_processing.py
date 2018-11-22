@@ -13,7 +13,9 @@ from sklearn.decomposition import PCA
 from MulticoreTSNE import MulticoreTSNE as TSNE
 from pydub import AudioSegment
 import csv
-from minisom import MiniSom    
+from minisom import MiniSom
+import umap
+
 
 smilextract = '../opensmile-2.3.0/SMILExtract'
 
@@ -30,7 +32,7 @@ def update_config(config_file, segment_size, step_size):
                 f.write(new_line)
                 f.write("\n")
             elif line.startswith('frameStep'):
-                new_line = "frameStep = " + step_size
+                new_line = "frameStep = " + step_size + "0"
                 f.write(new_line)
                 f.write("\n")
             else:
@@ -74,33 +76,40 @@ def main(session_key, config_file, segment_size, step_size):
     htk_reader.load(output_path)
     result = np.array(htk_reader.data)
     
+    print(result)
     # Run data through t-SNE
     tsne = TSNE(n_components=2, perplexity=25)#, random_state=None)
-    Y1 = tsne.fit_transform(result)
+    Y1 = convert_range(tsne.fit_transform(result))
     print("t-SNE done")
 
     # Run data through PCA
     pca = PCA(n_components=2)
-    Y2 = pca.fit_transform(result)
+    Y2 = convert_range(pca.fit_transform(result))
     print("PCA done")
-    print("Y2: ", Y2)
 
     # Run data through SOM
     som = False
     if som:
         som = MiniSom(25, 25, len(result[0]), sigma=0.3, learning_rate=0.1)
         som.train_random(result, 1000)
-        Y3 = np.array([np.array(som.winner(i)) for i in range(len(result))])
-        print("Y3: ", Y3)
+        Y3 = convert_range(np.array([np.array(som.winner(i)) for i in range(len(result))]))
         print("SOM done")
     else:
-        Y3 = np.array([np.array([random.randint(-50, 50), random.randint(-50, 50)]) for i in range(len(Y2))])
+        Y3 = convert_range(np.array([np.array([random.randint(-50, 50), random.randint(-50, 50)]) for i in range(len(Y2))]))
+
+    # Run data through UMAP
+    run_umap = True
+    if run_umap:
+        Y4 = convert_range(umap.UMAP().fit_transform(result))
+        print("UMAP done")
+    else:
+        Y4 = convert_range(np.array([np.array([random.randint(-50, 50), random.randint(-50, 50)]) for i in range(len(Y2))]))
 
     # Format t-SNE output to correct dictionary format
     data = []
     i = 0
-    for coord1, coord2, coord3 in zip(Y1, Y2, Y3):
-        data.append({"id":i, "tsneX":float(coord1[0]), "tsneY":float(coord1[1]), "pcaX":float(coord2[0]), "pcaY":float(coord2[1]), "somX":float(coord3[0]), "somY":float(coord3[1]), "start":int(i*step_size), "active":1, "color":"black"})
+    for coord1, coord2, coord3, coord4 in zip(Y1, Y2, Y3, Y4):
+        data.append({"id":i, "tsneX":float(coord1[0]), "tsneY":float(coord1[1]), "pcaX":float(coord2[0]), "pcaY":float(coord2[1]), "somX":float(coord3[0]), "somY":float(coord3[1]), "umapX":float(coord4[0]), "umapY":float(coord4[1]), "start":int(i*step_size), "active":1, "color":"black"})
         #data.append({"id":i, "tsneX":random.randint(1,99), "tsneY":random.randint(1,99), "pcaX":random.randint(1,99), "pcaY":random.randint(1,99), "start":int(i*step_size), "active":1, "color":"black"})
         i+=1
 
@@ -166,25 +175,39 @@ def retrain(valid_points, session_key, old_session_key, segment_size, step_size)
     
     # Run data through t-SNE
     tsne = TSNE(n_components=2, perplexity=25)#, random_state=None)
-    Y1 = tsne.fit_transform(new_result)
+    Y1 = convert_range(tsne.fit_transform(new_result))
     print("t-SNE done")
 
     # Run data through PCA
     pca = PCA(n_components=2)
-    Y2 = pca.fit_transform(new_result)
+    Y2 = convert_range(pca.fit_transform(new_result))
     print("PCA done")
+
+    # Run data through SOM
+    som = False
+    if som:
+        som = MiniSom(25, 25, len(result[0]), sigma=0.3, learning_rate=0.1)
+        som.train_random(new_result, 1000)
+        Y3 = convert_range(np.array([np.array(som.winner(i)) for i in range(len(new_result))]))
+        print("SOM done")
+    else:
+        Y3 = convert_range(np.array([np.array([random.randint(-50, 50), random.randint(-50, 50)]) for i in range(len(Y2))]))
+
+    # Run data through UMAP
+    run_umap = True
+    if run_umap:
+        Y4 = convert_range(umap.UMAP().fit_transform(new_result))
+        print("UMAP done")
+    else:
+        Y4 = convert_range(np.array([np.array([random.randint(-50, 50), random.randint(-50, 50)]) for i in range(len(Y2))]))
 
     # Format t-SNE output to correct dictionary format
     data = []
     i = 0
 
-    print("HEREsadsadsadsad")
-    print(len(start_times))
-    print(len(colors))
-    print(len(Y1))
 
-    for coord1, coord2, start_time, color in zip(Y1, Y2, start_times, colors):
-        data.append({"id":i, "tsneX":float(coord1[0]), "tsneY":float(coord1[1]), "pcaX":float(coord2[0]), "pcaY":float(coord2[1]), "start":start_time, "active":1, "color":color})
+    for coord1, coord2, coord3, coord4, start_time, color in zip(Y1, Y2, Y3, Y4, start_times, colors):
+        data.append({"id":i, "tsneX":float(coord1[0]), "tsneY":float(coord1[1]), "pcaX":float(coord2[0]), "pcaY":float(coord2[1]), "somX":float(coord3[0]), "somY":float(coord3[1]), "umapX":float(coord4[0]), "umapY":float(coord4[1]), "start":start_time, "active":1, "color":color})
         #data.append({"id":i, "tsneX":random.randint(1,99), "tsneY":random.randint(1,99), "pcaX":random.randint(1,99), "pcaY":random.randint(1,99), "start":int(i*step_size), "active":1, "color":"black"})
         i+=1
 
@@ -204,3 +227,19 @@ def retrain(valid_points, session_key, old_session_key, segment_size, step_size)
         dict_writer.writerows(metadata)
 
     #return data, audio_duration
+
+def convert_range(Y):
+    # print(Y.shape)
+    # return Y
+    new_range = (80 - (-80))  
+    Y_x = Y[:,0]
+    
+    
+    old_range_x = (max(Y_x) - min(Y_x))  
+    new_Y_x = (((Y_x - min(Y_x)) * new_range) / old_range_x) + (-80)
+
+    Y_y = Y[:,1]
+    old_range_y = (max(Y_y) - min(Y_y))  
+    new_Y_y = (((Y_y - min(Y_y)) * new_range) / old_range_y) + (-80)
+    
+    return np.array((new_Y_x, new_Y_y)).T

@@ -10,6 +10,7 @@ $(document).ready(function() {
 
     // Radius of floating circle (cursor), also used in stroke-width of points
     var floatingCircleRadius = 100;
+    var prevFloatingCircleRadius = 100; // temporary solution for centroid placement
 
     // Algorithm used
     var alg = "tsne";
@@ -19,18 +20,38 @@ $(document).ready(function() {
 
     var shiftDown = false;
     var ctrlDown = false;
+    var cDown = false;
     var categoryColor = "black"; // Start color of floating circle
 
+    // Set variable for audio duration
+    var currentClosestTime = 0;
+
+    // Set variabel for graphPoints
+    var graphPoints = "";
+
+    // Set dict for centroids
+    centroids = {};
+
     // dimensions and margins
-    var svg = d3.select("svg")
-    width = $("svg").width();
-    height = $("svg").height();
+    var map = d3.select("#map")
+    width = $("#map").width();
+    height = $("#map").height();
     var margin = {
         top: (0 * width),
         right: (0 * width),
         bottom: (0 * width),
         left: (0 * width)
     };
+
+    // sequenceMap 
+    var sequenceMap = d3.select("#sequenceMap")
+    var sequenceMapWidth = $("#sequenceMap").width();
+    var sequenceMapHeight = $("#sequenceMap").height();
+
+    // sequenceMap 
+    var graphMap = d3.select("#graphMap")
+    var graphMapWidth = $("#graphMap").width();
+    var graphMapHeight = $("#graphMap").height();
 
     // create scale objects
     var xScale = d3.scaleLinear()
@@ -40,9 +61,15 @@ $(document).ready(function() {
         .domain([-max, max])
         .range([height, 0]);
 
+    // creat scale object for sequenceMap
+    var xScaleSequence = d3.scaleLinear()
+        .domain([0, max])
+        .range([0, sequenceMapWidth]);
+
     // Declare these as identical for now, will be changed
     var new_xScale = xScale;
     var new_yScale = yScale;
+    var new_xScaleSequence = xScaleSequence;
 
     // Pan and zoom
     var zoom = d3.zoom()
@@ -53,10 +80,19 @@ $(document).ready(function() {
         ])
         .on("zoom", zoomed);
 
+    // Pan and zoom
+    var zoom2 = d3.zoom()
+        .scaleExtent([1.0, 10])
+        .extent([
+            [0],
+            [sequenceMapWidth]
+        ])
+        .on("zoom", zoomed2);
+
     // Add rect, container of points
-    svg.append("rect")
-        .attr("width", $("svg").width())
-        .attr("height", $("svg").height())
+    map.append("rect")
+        .attr("width", $("#map").width())
+        .attr("height", $("#map").height())
         .style("fill", "none")
         .style("pointer-events", "all")
         .style("stroke-width", 4)
@@ -64,16 +100,56 @@ $(document).ready(function() {
         .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
         .classed("plot", true)
 
-    // Append g-element to svg
-    var points_g = svg.append("g")
+
+    // Append g-element to map
+    var points_g = map.append("g")
         .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
         .attr("clip-path", "url(#clip)")
         .classed("points_g", true);
 
+    sequenceMap.append("rect")
+        .attr("width", sequenceMapWidth)
+        .attr("height", $("#sequenceMap").height())
+        .style("fill", "none")
+        .style("pointer-events", "all")
+        .style("stroke-width", 3)
+        .style("stroke", "black")    
+
+    // Append g-element to sequenceMap
+    var rects_g = sequenceMap.append("g")
+        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
+        .attr("clip-path", "url(#clip)")
+        .classed("rects_g", true);
+
+    graphMap.append("rect")
+        .attr("id", "graphContainer")
+        .attr("width", graphMapWidth)
+        .attr("height", $("#graphMap").height())
+        .style("fill", "none")
+        .style("pointer-events", "all")
+        .style("stroke-width", 3)
+        .style("stroke", "black")
+
     // Draw points, start random and change to tsne for visualisation
     drawPoints()
-    drawBars()
+    drawRects()
     changeAlgorithm()
+
+    // set design of timeBar
+    var timeBar = d3.select("#timeBar")
+        .attr('x', function(d) {
+            //return xScale(d.tsneX)}
+            return xScaleSequence(0)
+        }) // x
+        .attr('y', "90%")
+        .attr('rx', "100")
+        .attr('ry', "50")
+        .attr('width', 0.005 * sequenceMapWidth)//(xScaleSequence(segmentSize/audioDuration)*100 - xScaleSequence(0))) // radius
+        .attr('height', "20%") // radius
+        .style('fill', function(d) {
+            return "black"
+        }) // color of point
+
 
     function drawPoints() {
         // Draws points based on data provided by python
@@ -82,11 +158,9 @@ $(document).ready(function() {
             .classed("dot", true) // class = .dot
             .classed("plot", true) // class = .plot
             .attr('cx', function(d) {
-                //return xScale(d.tsneX)}
                 return xScale(Math.random()*200-100)
             }) // x
             .attr('cy', function(d) {
-                //return yScale(d.tsneY)
                 return yScale(Math.random()*200-100)
             }) // y
             .attr('r', 12) // radius
@@ -101,12 +175,79 @@ $(document).ready(function() {
             }) // color of point
             .style('fill-opacity', 0.5) // a bit of transparency
             .style('stroke-width', floatingCircleRadius) // width of invisible radius, used to trigger hover
-            .style('stroke-opacity', 0) // Hide frame of points
+            .style('stroke-opacity', 0) // Hide frame of points 
 
-        // Add functionality for svg again, they were overridden during drawing of datapoints
-        svg.style("pointer-events", "all")
-        svg.call(zoom)
-        svg.on("dblclick.zoom", null) // turn off double click zoom
+        // Add functionality for map again, they were overridden during drawing of datapoints
+        map.style("pointer-events", "all")
+        map.call(zoom)
+        map.on("dblclick.zoom", null) // turn off double click zoom
+    }
+
+    function drawRects() {
+        // Draws rects based on data provided by python
+
+        rects = rects_g.selectAll("rect").data(data);
+        rects = rects.enter().append("rect")
+            .classed("rectBar", true) // class = .plot
+            .attr('x', function(d) {
+                //return xScale(d.tsneX)}
+                return xScaleSequence((d.start/audioDuration)*100)
+            }) // x
+            .attr("y", "0")
+            .attr('width', (xScaleSequence(stepSize/audioDuration)*100 - xScaleSequence(0))) // radius
+            .attr('height', "100%") // radius
+            .attr('id', function(d) {
+                return "rect" + d.id
+            }) // id
+            .attr('start', function(d) {
+                return d.start
+            }) // starttime of point in given audiofile
+            .style('fill', function(d) {
+                return d.color
+            }) // color of point
+            .style('fill-opacity', 0.5) // a bit of transparency
+            .style('cursor', "pointer") // a bit of transparency
+            .on("click",function(d){
+                var audio = document.getElementById('audioBar');
+                audio.currentTime = d.start / 1000;
+                audio.play();
+            })
+            .on("mouseenter", function(d){
+                $("#timeBarDuration").show()
+                $("#timeBarDuration").css({
+                    'position': 'absolute',
+                    'z-index': '-1000',
+                    'background-color': "black",
+                    'color': "white",
+                    'left': d.start / audioDuration * 100 + '%'
+                });
+                $("#timeBarDuration").text(msToTime(d.start));
+            })
+            .on("mouseleave", function(d){
+                $("#timeBarDuration").hide()    
+            })
+            // $("#" + barId).mouseenter(function() {
+            //     $("#timeBarDuration").text(msToTime(point.start));
+            //     $("#timeBarDuration").css({
+            //         'position': 'absolute',
+            //         'background-color': "black",
+            //         'color': "white",
+            //         'left': point.start / audioDuration * 100 + '%',
+            //         'bottom': "100%",
+            //         'opacity': '1'
+            //     });
+            //     $("#timeBarDuration").show()
+            // });
+
+            // $("#" + barId).mouseleave(function() {
+            //     $("#timeBarDuration").hide()
+            // });
+            
+
+        // Add functionality for map again, they were overridden during drawing of datapoints
+        sequenceMap.style("pointer-events", "all")
+        sequenceMap.call(zoom2)
+        sequenceMap.on("dblclick.zoom", null) // turn off double click zoom
     }
 
     function zoomed() {
@@ -119,61 +260,45 @@ $(document).ready(function() {
                 if (alg=="tsne"){return new_xScale(d.tsneX)}
                 else if (alg=="pca"){return new_xScale(d.pcaX)}
                 else if (alg=="som"){return new_xScale(d.somX)}
+                else if (alg=="umap"){return new_xScale(d.umapX)}
             })
             .attr('cy', function(d) {
                 if (alg=="tsne"){return new_yScale(d.tsneY)}
                 else if (alg=="pca"){return new_yScale(d.pcaY)}
                 else if (alg=="som"){return new_yScale(d.somY)}
+                else if (alg=="umap"){return new_yScale(d.umapY)}
             });
+        d3.selectAll(".centroid").remove()
+            // .attr('cx', function(d) {return new_xScale(((d3.select(this).attr("x")/width) * 200)-100)})
+            // .attr('cy', function(d) {return new_yScale(((d3.select(this).attr("y")/height) * 200)-100)})
+            // .attr('cx', function(d) {return d3.select(this).attr("x")})
+            // .attr('cy', function(d) {return d3.select(this).attr("y")})
     }
 
-    function drawBars() {
-        // Draw timebars and assign hovers based on data provided by python
-        data.forEach(function(point) {
-            barId = "timeBarp" + point.id;
-            $("#timeline").append($("<div id='" + barId + "'></div>"));
-            $("#" + barId).addClass("timeBar");
-                $("#" + barId).css({
-                'position': 'absolute',
-                'left': (((point.start-segmentSize) / audioDuration * 100)) + '%',
-                'background-color': point.color,
-                'height': '100%',
-                'opacity': '0.3',
-                'width': (segmentSize*3) / audioDuration * 100 + '%',
-                'border-radius': '0%',
-                'cursor': 'pointer'
-            });
+    function zoomed2() {
+        // create new scale ojects based on event
+        new_xScaleSequence = d3.event.transform.rescaleX(xScaleSequence);
 
-            $("#" + barId).attr("tsneX", point.tsneX);
-            $("#" + barId).attr("tsneY", point.tsneY);
-            $("#" + barId).attr("pcaX", point.pcaX);
-            $("#" + barId).attr("pcaY", point.pcaY);
-            $("#" + barId).attr("somX", point.somX);
-            $("#" + barId).attr("somY", point.somY);
+        rects.data(data)
+            .attr('x', function(d) {
+                return new_xScaleSequence((d.start/audioDuration)*100)
+            })
+            .attr('width', function(d) {
+                return (new_xScaleSequence((stepSize/audioDuration)*100) - new_xScaleSequence(0))
+            })
+        timeBar
+            .attr('x', function(d) {
+                return new_xScaleSequence(((1000*currentClosestTime)/audioDuration)*100)
+            })
 
-            $("#" + barId).mouseenter(function() {
-                $("#timeBarDuration").text(msToTime(point.start));
-                $("#timeBarDuration").css({
-                    'position': 'absolute',
-                    'background-color': "black",
-                    'color': "white",
-                    'left': point.start / audioDuration * 100 + '%',
-                    'bottom': "100%",
-                    'opacity': '1'
-                });
-                $("#timeBarDuration").show()
-            });
-
-            $("#" + barId).mouseleave(function() {
-                $("#timeBarDuration").hide()
-            });
-
-            $("#" + barId).click(function() {
-                var audio = document.getElementById('audioBar');
-                audio.currentTime = point.start / 1000;
-                audio.play();
-            });
-        })
+        // firstBar = d3.select("#rect0")
+        //     if(firstBar.attr("x") > 0) {
+        //         console.log("too far out")
+        //         allBars = d3.selectAll(".rectBar")
+        //             .attr('x', function(d) {
+        //                 return new_xScaleSequence((d.start/audioDuration)*100) - firstBar.attr("x")
+        //             })
+        //     }
     }
 
 
@@ -181,7 +306,7 @@ $(document).ready(function() {
     // Mouse events // 
     //////////////////
 
-    svg.on("mousemove", function(ev) {
+    map.on("mousemove", function(ev) {
         var coords = d3.mouse(this);
         if (shiftDown) {
             categorize(coords[0], coords[1]);
@@ -190,15 +315,6 @@ $(document).ready(function() {
             updateAudioList(coords[0], coords[1]);
         }
     })
-
-    // $(".dot").mousemove(function(ev) {
-        
-    //     //$("#floatingCircle").show();
-    //     drawFloatingCircle(ev);
-    //     if (shiftDown) {
-    //         categorize2(ev, this);
-    //     }
-    // });
 
     $(".plot").mousemove(function(ev) {
         //$("#floatingCircle").show();
@@ -228,6 +344,11 @@ $(document).ready(function() {
         }
         else if (ev.ctrlKey) {
             ctrlDown = true;
+        }
+        else if (ev.keyCode == 67 && categoryColor != "black") {
+            cDown = true;
+            floatingCircleRadius = 65;
+            drawFloatingCircle(ev);
         } else {
             if (ev.keyCode == 48) {
                 categoryColor = "black";
@@ -250,22 +371,26 @@ $(document).ready(function() {
             } 
             else if (ev.keyCode == 81) {
                 floatingCircleRadius = 50;
-                var circle = svg.selectAll("circle");
-                circle.style('stroke-width', floatingCircleRadius);
+                prevFloatingCircleRadius = 50;
+                // var circle = map.selectAll("circle");
+                // circle.style('stroke-width', floatingCircleRadius);
             } 
             else if (ev.keyCode == 87) {
                 floatingCircleRadius = 100;
-                var circle = svg.selectAll("circle");
-                circle.style('stroke-width', floatingCircleRadius);
+                prevFloatingCircleRadius = 100;
+                // var circle = map.selectAll("circle");
+                // circle.style('stroke-width', floatingCircleRadius);
             } 
             else if (ev.keyCode == 69) {
                 floatingCircleRadius = 150;
-                var circle = svg.selectAll("circle");
-                circle.style('stroke-width', floatingCircleRadius);
+                prevFloatingCircleRadius = 150;
+                // var circle = map.selectAll("circle");
+                // circle.style('stroke-width', floatingCircleRadius);
             } else if (ev.keyCode == 82) {
                 floatingCircleRadius = 300;
-                var circle = svg.selectAll("circle");
-                circle.style('stroke-width', floatingCircleRadius);
+                prevFloatingCircleRadius = 300;
+                // var circle = map.selectAll("circle");
+                // circle.style('stroke-width', floatingCircleRadius);
             } 
             drawFloatingCircle(ev);
         }
@@ -279,6 +404,11 @@ $(document).ready(function() {
             ctrlDown = false;
             currentSegmentStartTimes = [];
         }
+        else if (cDown) {
+            cDown = false;
+            floatingCircleRadius = prevFloatingCircleRadius;
+            drawFloatingCircle(ev);
+        }
     });
 
 
@@ -286,21 +416,20 @@ $(document).ready(function() {
     // Clicks // 
     ////////////
 
-    // Color points on click
-    // $(".dot").click(function(ev) {
-    //     categorize(ev);
-    // });
-
-    svg.on("click", function() {
+    map.on("click", function() {
         var coords = d3.mouse(this);
-        categorize(coords[0], coords[1]);
+        if (cDown) {
+            addCentroid(coords[0], coords[1]);
+        }
+        else {
+            categorize(coords[0], coords[1]);
+        }
     })
 
     // Change color of floating circle
     $("#buttonGroup1 button").on("click", function() {
         value = this.value;
         categoryColor = value;
-        console.log(categoryColor);
     });
 
     // Change algorithm, and therefor coords
@@ -311,8 +440,6 @@ $(document).ready(function() {
 
     $("#buttonGroup3 button").on("click", function() {
         floatingCircleRadius = this.value;
-        var circle = svg.selectAll("circle");
-        circle.style('stroke-width', floatingCircleRadius);
     });
 
     $("#buttonGroup4 button").on("click", function() {
@@ -323,129 +450,139 @@ $(document).ready(function() {
         retrain();
     });
 
-    // Play audio
-    $("#playButton").on("click", function() {
-        $("#audioBar").trigger('play');
+    $("#buttonGroup6 button").on("click", function() {
+        if(this.value=="stop"){
+            var audio = document.getElementById('audioBar');
+            audio.pause();
+            audio.currentTime = 0;
+        }
+        else {
+            $("#audioBar").trigger(this.value);    
+        }
+        
     });
 
-    // Pause audio
-    $("#pauseButton").on("click", function() {
-        $("#audioBar").trigger('pause');
-    });
+    $("#graphMap").on("click", function() {
+        updateGraph();
+    })
+
 
     /////////////////////
     // Misc. functions // 
     /////////////////////
 
-    // function categorize(ev) {
-    //     // Changes color of points and bars
-    //     if (categoryColor!=="black") {
-    //         labeled = true;
-    //         pointList = getPointsUnderCursor(ev);
-    //         pointList.forEach(function(point) {
-    //             p = d3.select("#" + point.id)
-    //             p.style('fill', categoryColor)
-    //             p.style('color', categoryColor)
-
-    //             $("#timeBar" + point.id).css({
-    //                 'background-color': categoryColor
-    //             });
-    //         });
-    //     }
-    // }
 
     function categorize(x, y) {
         // Changes color of points and bars
         labeled = true;
         if (alg=="tsne") {
-            circles = d3.selectAll("circle")
+            circles = d3.selectAll(".dot")
                 .filter(function(d) {return Math.abs(new_xScale(d.tsneX)-x) < floatingCircleRadius/2
                                           & Math.abs(new_yScale(d.tsneY)-y) < floatingCircleRadius/2})
             circles.style('fill', categoryColor)
 
-            d3.selectAll(".timeBar")
-                .filter(function(d) {return Math.abs(new_xScale(d3.select(this).attr("tsnex"))-x) < floatingCircleRadius/2
-                                          & Math.abs(new_yScale(d3.select(this).attr("tsney"))-y) < floatingCircleRadius/2})
-                .style('background-color', categoryColor)
+            rectsBars = d3.selectAll(".rectBar")
+                .filter(function(d) {return Math.abs(new_xScale(d.tsneX)-x) < floatingCircleRadius/2
+                                          & Math.abs(new_yScale(d.tsneY)-y) < floatingCircleRadius/2})
+            rectsBars.style('fill', categoryColor)
         }
         else if (alg=="pca") {
-            circles = d3.selectAll("circle")
+            circles = d3.selectAll(".dot")
                 .filter(function(d) {return Math.abs(new_xScale(d.pcaX)-x) < floatingCircleRadius/2
                                           & Math.abs(new_yScale(d.pcaY)-y) < floatingCircleRadius/2})
             circles.style('fill', categoryColor)
 
-            d3.selectAll(".timeBar")
-                .filter(function(d) {return Math.abs(new_xScale(d3.select(this).attr("pcax"))-x) < floatingCircleRadius/2
-                                          & Math.abs(new_yScale(d3.select(this).attr("pcay"))-y) < floatingCircleRadius/2})
-                .style('background-color', categoryColor)
+            rectsBars = d3.selectAll(".rectBar")
+                .filter(function(d) {return Math.abs(new_xScale(d.pcaX)-x) < floatingCircleRadius/2
+                                          & Math.abs(new_yScale(d.pcaY)-y) < floatingCircleRadius/2})
+            rectsBars.style('fill', categoryColor)
         }
         else if (alg=="som") {
-            circles = d3.selectAll("circle")
+            circles = d3.selectAll(".dot")
                 .filter(function(d) {return Math.abs(new_xScale(d.somX)-x) < floatingCircleRadius/2
                                           & Math.abs(new_yScale(d.somY)-y) < floatingCircleRadius/2})
             circles.style('fill', categoryColor)
 
-            d3.selectAll(".timeBar")
-                .filter(function(d) {return Math.abs(new_xScale(d3.select(this).attr("somx"))-x) < floatingCircleRadius/2
-                                          & Math.abs(new_yScale(d3.select(this).attr("somy"))-y) < floatingCircleRadius/2})
-                .style('background-color', categoryColor)
+            rectsBars = d3.selectAll(".rectBar")
+                .filter(function(d) {return Math.abs(new_xScale(d.somX)-x) < floatingCircleRadius/2
+                                          & Math.abs(new_yScale(d.somY)-y) < floatingCircleRadius/2})
+            rectsBars.style('fill', categoryColor)
+        }
+        else if (alg=="umap") {
+            circles = d3.selectAll(".dot")
+                .filter(function(d) {return Math.abs(new_xScale(d.umapX)-x) < floatingCircleRadius/2
+                                          & Math.abs(new_yScale(d.umapY)-y) < floatingCircleRadius/2})
+            circles.style('fill', categoryColor)
+
+            rectsBars = d3.selectAll(".rectBar")
+                .filter(function(d) {return Math.abs(new_xScale(d.umapX)-x) < floatingCircleRadius/2
+                                          & Math.abs(new_yScale(d.umapY)-y) < floatingCircleRadius/2})
+            rectsBars.style('fill', categoryColor)
         }
     }
 
     function updateAudioList(x, y) {
         currentSegmentStartTimes = []
-        circles = d3.selectAll("circle")
-                    .filter(function(d) {return Math.abs(new_xScale(d.tsneX)-x) < floatingCircleRadius/2
-                                              & Math.abs(new_yScale(d.tsneY)-y) < floatingCircleRadius/2})
-            circles.each(function(d, i){
-                    currentSegmentStartTimes.push(d3.select(this).attr("start"));
-                })
-    }
-
-    function getPointsUnderCursor(ev) {
-        // Returns list of every circle-element under floating circle
-        var x = ev.clientX;
-        var y = ev.clientY;
-        var pointList = [];
-        elementMouseIsOver = document.elementFromPoint(x, y);
-
-        while (elementMouseIsOver.tagName !== 'rect') {
-            pointList.push(elementMouseIsOver);
-            elementMouseIsOver.style.pointerEvents = 'none';
-            elementMouseIsOver = document.elementFromPoint(x, y);
+        if (alg=="tsne") {
+            circles = d3.selectAll(".dot")
+                        .filter(function(d) {return Math.abs(new_xScale(d.tsneX)-x) < floatingCircleRadius/2
+                                                  & Math.abs(new_yScale(d.tsneY)-y) < floatingCircleRadius/2})
+                circles.each(function(d, i){
+                        currentSegmentStartTimes.push(d3.select(this).attr("start"));
+                    })
         }
-
-        // Now clean it up
-        var i = 0,
-            il = pointList.length;
-
-        // pointerEvents is reseted after a short pause, to avoid repeated processing of elements
-        setTimeout(function() {
-            for (; i < il; i += 1) {
-                pointList[i].style.pointerEvents = '';
-            }
-        }, 2000);
-        
-        svg.style("pointer-events", "all")
-        return pointList
+        else if (alg=="pca") {
+            circles = d3.selectAll(".dot")
+                        .filter(function(d) {return Math.abs(new_xScale(d.pcaX)-x) < floatingCircleRadius/2
+                                                  & Math.abs(new_yScale(d.pcaY)-y) < floatingCircleRadius/2})
+                circles.each(function(d, i){
+                        currentSegmentStartTimes.push(d3.select(this).attr("start"));
+                    })
+        }
+        else if (alg=="som") {
+            circles = d3.selectAll(".dot")
+                        .filter(function(d) {return Math.abs(new_xScale(d.somX)-x) < floatingCircleRadius/2
+                                                  & Math.abs(new_yScale(d.somY)-y) < floatingCircleRadius/2})
+                circles.each(function(d, i){
+                        currentSegmentStartTimes.push(d3.select(this).attr("start"));
+                    })
+        }
+        else if (alg=="umap") {
+            circles = d3.selectAll(".dot")
+                        .filter(function(d) {return Math.abs(new_xScale(d.umapX)-x) < floatingCircleRadius/2
+                                                  & Math.abs(new_yScale(d.umapY)-y) < floatingCircleRadius/2})
+                circles.each(function(d, i){
+                        currentSegmentStartTimes.push(d3.select(this).attr("start"));
+                    })
+        }
     }
 
-    function getPointsUnderCursor2(ev) {
-        // Returns list of every circle-element under floating circle
-        var x = ev.clientX;
-        var y = ev.clientY;
-        var pointList = [];
-        console.log("coloring")
-
-        coordinates = d3.mouse(ev);
-        var x = coordinates[0];
-        var y = coordinates[1];
-        console.log(x)
-        console.log(y)
-
-        points = d3.selectAll("circle")
-            .filter(function(d) {return d.tsneX > 0 & d.tsneY > 0 })
-            .style('fill', "purple")
+    function addCentroid(x, y) {
+        centroids[categoryColor] = [x, y]
+        d3.select("#" + categoryColor + "centroid").remove()
+        points_g.append("circle")
+            .classed("centroid", true)
+            .attr("id", categoryColor + "centroid")
+            .attr('x', x) // x
+            .attr('y', y) // y
+            .attr('cx', function(d) {
+                //return new_xScale(((x/width) * 200)-100)
+                return x
+            }) // x
+            .attr('cy', function(d) {
+                //return height - new_yScale(((y/height) * 200)-100)
+                return y
+            }) // y
+            .attr('r', 25) // radius
+            .style('fill', function(d) {
+                return categoryColor
+            }) // color of point
+            .style('stroke', "white")
+            .style('stroke-width', "25")
+            .style('stroke-opacity', "0.8")
+            .style('fill-opacity', 1.0) // no transparency
+            .style('z-index', 1000) // a bit of transparency
+        updateGraph(categoryColor, x, y)
     }
 
     function drawFloatingCircle(ev) {
@@ -460,38 +597,22 @@ $(document).ready(function() {
         });
     }
 
-    function msToTime(ms) {
-        // Converts milliseconds to duration, min:sec:ms
-        var minutes = Math.floor((ms / (60 * 1000)) % 60).toString();
-        var seconds = Math.floor((ms / 1000) % 60).toString();
-        var milliseconds = (ms % 1000).toString();
-
-        if (minutes.length == 1) {
-            minutes = "0" + minutes;
-        }
-        if (seconds.length == 1) {
-            seconds = "0" + seconds;
-        }
-        if (milliseconds.length == 1) {
-            milliseconds = "00" + milliseconds;
-        } else if (milliseconds.length == 2) {
-            milliseconds = "0" + milliseconds;
-        }
-        return minutes + ":" + seconds + "." + milliseconds;
-    }
-
     function changeAlgorithm () {
-        var circle = svg.selectAll("circle");
+        var circle = map.selectAll(".dot");
         circle.transition()
             .duration(3000)
             .attr('cx', function(d) {
                 if (alg=="tsne"){return new_xScale(d.tsneX)}
                 else if (alg=="pca"){return new_xScale(d.pcaX)}
-                else if (alg=="som"){return new_xScale(d.somX)}})
+                else if (alg=="som"){return new_xScale(d.somX)}
+                else if (alg=="umap"){return new_xScale(d.umapX)}
+            })
             .attr('cy', function(d) {
                 if (alg=="tsne"){return new_yScale(d.tsneY)}
                 else if (alg=="pca"){return new_yScale(d.pcaY)}
-                else if (alg=="som"){return new_yScale(d.somY)}})
+                else if (alg=="som"){return new_yScale(d.somY)}
+                else if (alg=="umap"){return new_yScale(d.umapY)}
+            })
     }
 
     function arrayToCSV () {
@@ -502,7 +623,7 @@ $(document).ready(function() {
             twoDiArray = [["id", "startTime(ms)", "label"]]
 
             var i = 0;
-            $("circle").each(function(){
+            $(".dot").each(function(){
                 p = d3.select("#" + $(this).attr('id'))
                 //while (p.attr('start') < i*stepSize)
                 label = $("#"+p.style("fill")+"Label").val()
@@ -527,6 +648,128 @@ $(document).ready(function() {
         }
     }
 
+    function updateGraph (color, centroidX, centroidY) {
+        // Loop through points and calculate distances from centroid
+        X = [];
+        Y = [];
+        $(".dot").each(function(){
+            p = d3.select("#" + $(this).attr('id'))
+            X.push((p.attr('start')/audioDuration)*graphMapWidth)
+
+            dist = Math.sqrt(
+                    (centroidX - p.attr('cx'))*(centroidX - p.attr('cx')) + 
+                    (centroidY - p.attr('cy'))*(centroidY - p.attr('cy')));
+            Y.push(dist)
+        })
+
+        // Transform distribution to 0-1
+        YMax = Math.max.apply(Math, Y)
+        for(var i=0; i<Y.length; i++) {
+            Y[i] /= YMax;
+        }
+
+        // Convert to proper string format
+        pointsAsString = ""
+        Y = medianFilter(Y, $("#medianfilterValue").val())
+        Y[0] = 100
+        Y[Y.length-1] = 100
+        for (var i2 = 0; i2 < X.length; i2++) {
+            pointsAsString += X[i2]
+            pointsAsString += "," + Y[i2]*graphMapHeight + " "
+        }
+
+        // Remove potential existing line of same color 
+        d3.select("#polyline" + color).remove()
+
+        // Create line
+        graphMap.append("polyline")
+            .attr("id", "polyline" + color)
+            .attr("stroke", color)
+            .attr("stroke-width", 3)
+            .attr("fill", color)
+            .attr("fill-opacity", 0.5)
+            .attr("points", pointsAsString)
+    }
+
+    // function updateGraph () {
+    //     usedColors = []
+    //     $(".dot").each(function(){
+    //         p = d3.select("#" + $(this).attr('id'))
+    //         if (p.style("fill") != "black" & usedColors.indexOf(p.style("fill")) == -1){
+    //             usedColors.push(p.style("fill"))
+    //         }
+    //     })
+        
+    //     d3.selectAll("polyline").remove()
+    //     aa = 1
+    //     for (var i = 0; i < usedColors.length; i++) {        
+    //         graphPoints = "";
+    //         graphPoints2 = "";
+    //         X = [];
+    //         Y = [];
+    //         $(".dot").each(function(){
+    //             p = d3.select("#" + $(this).attr('id'))
+    //             X.push((p.attr('start')/audioDuration)*graphMapWidth)
+
+    //             graphPoints2 += ((p.attr('start')/audioDuration)*graphMapWidth).toString()
+    //             if (p.style("fill") != usedColors[i]) {
+    //                 graphPoints2 += "," + aa * graphMapHeight + " "
+    //                 Y.push("1")
+    //             }
+    //             else {
+    //                 graphPoints2 += "," + 0 + " "
+    //                 Y.push("0")
+    //             }
+    //         })
+    //         Y = medianFilter(Y, 5)
+    //         for (var i2 = 0; i2 < X.length; i2++) {
+    //             graphPoints += X[i2]
+    //             graphPoints += "," + Y[i2]*graphMapHeight + " "
+    //         }
+
+    //         graphMap.append("polyline")
+    //             .attr("stroke", usedColors[i])
+    //             .attr("stroke-width", 2)
+    //             .attr("fill", "none")
+    //             .attr("points", graphPoints)
+
+    //         aa = 0.8
+    //     }
+    // }
+
+    function medianFilter (array, windowSize) {
+        newArray = []
+        for (var i = 0; i < array.length; i++) {
+            currentValues = [array[i]]
+            var i2 = 1
+            while (i2<=windowSize) {
+                currentValues.push(array[i+i2])
+                currentValues.push(array[i-i2])
+                i2++;
+            }
+            newArray.push(median(currentValues))
+        }
+        return newArray
+    }
+
+    function median(values){
+        values.sort(function(a,b){
+            return a-b;
+        });
+
+        if(values.length ===0) return 0
+
+        var half = Math.floor(values.length / 2);
+
+        if (values.length % 2) {
+            return values[half];
+        }
+        else {
+            return (values[half - 1] + values[half]) / 2.0;
+        }
+        
+        }
+
     function retrain () {
         if (!labeled) {
             alert("Can't retrain, there are no labels")
@@ -537,7 +780,7 @@ $(document).ready(function() {
                 .style("display", "none");
             validPoints = [["id", "startTime(ms)", "label"]]
 
-            $("circle").each(function(i){
+            $(".dot").each(function(i){
                 p = d3.select("#" + $(this).attr('id'))
                 //label = $("#"+p.style("fill")+"Label").val()
                 if (p.style("fill") != 'black') {
@@ -658,8 +901,33 @@ $(document).ready(function() {
         }        
     }
 
+    function updateTimeBar() {
+        var audio = document.getElementById('audioBar');
+        currentClosestTime = (Math.ceil(audio.currentTime*1000 / 1000) * 1000)/1000;
+        timeBar.attr("x", new_xScaleSequence(((1000*(currentClosestTime)-1000)/audioDuration)*100))
+
+        // console.log("adjusting")
+        // var adjustment = d3.select("#rect0").attr("x");
+
+        // if(adjustment > 0) {
+
+        //     allBars = d3.selectAll(".rectBar")
+        //         .attr('x', function(d) {
+        //             return new_xScaleSequence((d.start/audioDuration)*100) - adjustment;
+        //         })
+
+        //     d3.select("#timeBar")
+        //         .attr('x', function(d) {
+        //             return new_xScaleSequence(((1000*currentClosestTime)/audioDuration)*100) - adjustment;
+        //         })
+        // }
+    }
+
     // Sample audio from points every second
     setInterval(playSegments, 1000);
+    setInterval(updateTimeBar, 100);
+
+
 })
 
 

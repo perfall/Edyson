@@ -12,6 +12,7 @@ import audio_processing
 from flask import send_file
 import csv
 import json
+import re
 
 UPLOAD_FOLDER = 'static/uploads/'
 ALLOWED_EXTENSIONS = set(['wav', 'mp3'])
@@ -112,6 +113,16 @@ def load_browser(session_key) -> str:
             reader = csv.reader(f, skipinitialspace=True)
             header = next(reader)
             metadata = [{k: v for k, v in zip(header, line)} for line in reader][0]
+        
+        try:
+            chunks = metadata["chunks"]
+            #chunks = "../" + metadata["audio_path"]
+        except:
+            chunks = "../" + metadata["audio_path"]
+        #chunks = re.sub("\[|\]|\,\'", "", metadata["chunks"]).split()
+        print(chunks)
+        print(type(chunks))
+        
         return render_template('audioBrowser.html', 
                                 data=data, 
                                 audioDuration=metadata["audio_duration"], 
@@ -119,7 +130,8 @@ def load_browser(session_key) -> str:
                                 stepSize=metadata["step_size"],
                                 datapoints=len(data),
                                 session_key=session_key, 
-                                audioPath="../" + metadata["audio_path"])
+                                audioPath="../" + metadata["audio_path"],
+                                audioPaths = chunks)
     else:
         return "<h3>Something went wrong, the files for the this audio session does not exist</h3>"
 

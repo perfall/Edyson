@@ -82,7 +82,7 @@ $(document).ready(function() {
 
     // Pan and zoom
     var zoom2 = d3.zoom()
-        .scaleExtent([1.0, 10])
+        .scaleExtent([1.0, 100])
         .extent([
             [0],
             [sequenceMapWidth]
@@ -153,6 +153,7 @@ $(document).ready(function() {
 
     function drawPoints() {
         // Draws points based on data provided by python
+        console.log("drawPoints")
         points = points_g.selectAll("circle").data(data);
         points = points.enter().append("circle")
             .classed("dot", true) // class = .dot
@@ -226,22 +227,6 @@ $(document).ready(function() {
             .on("mouseleave", function(d){
                 $("#timeBarDuration").hide()    
             })
-            // $("#" + barId).mouseenter(function() {
-            //     $("#timeBarDuration").text(msToTime(point.start));
-            //     $("#timeBarDuration").css({
-            //         'position': 'absolute',
-            //         'background-color': "black",
-            //         'color': "white",
-            //         'left': point.start / audioDuration * 100 + '%',
-            //         'bottom': "100%",
-            //         'opacity': '1'
-            //     });
-            //     $("#timeBarDuration").show()
-            // });
-
-            // $("#" + barId).mouseleave(function() {
-            //     $("#timeBarDuration").hide()
-            // });
             
 
         // Add functionality for map again, they were overridden during drawing of datapoints
@@ -429,7 +414,7 @@ $(document).ready(function() {
     // Change color of floating circle
     $("#buttonGroup1 button").on("click", function() {
         value = this.value;
-        categoryColor = value;
+        //categoryColor = value;
     });
 
     // Change algorithm, and therefor coords
@@ -460,6 +445,36 @@ $(document).ready(function() {
             $("#audioBar").trigger(this.value);    
         }
         
+    });
+
+    $("#buttonGroup7 button").on("click", function() {
+        console.log(categoryColor)
+        d3.selectAll(".dot")
+            .style('fill', categoryColor)
+        d3.selectAll(".rectBar")
+            .style('fill', categoryColor)
+
+    });
+
+    $("#buttonGroup8 button").on("click", function() {
+        console.log("removing points")
+        d3.selectAll(".dot")
+            .remove()
+        newData = []
+        for (var i = 0; i < data.length; ++i) {
+            if (i % 10 == 0){
+                newData.push(data[i])
+            }    
+        }
+        data = newData
+        drawPoints();
+        changeAlgorithm()
+
+    });
+
+    $("#buttonGroup9 button").on("click", function() {
+        colorWithKmeans(this.value);
+
     });
 
     $("#graphMap").on("click", function() {
@@ -613,6 +628,31 @@ $(document).ready(function() {
                 else if (alg=="som"){return new_yScale(d.somY)}
                 else if (alg=="umap"){return new_yScale(d.umapY)}
             })
+    }
+
+    function colorWithKmeans (clusterValue) {
+        console.log("Kmean coloring")
+        points.data(data)
+            .style('fill', function(d) {
+                if (clusterValue=="kcolor2"){return d.kcolor2}
+                else if (clusterValue=="kcolor3"){return d.kcolor3}
+                else if (clusterValue=="kcolor4"){return d.kcolor4}
+                else if (clusterValue=="kcolor5"){return d.kcolor5}
+                else if (clusterValue=="kcolor6"){return d.kcolor6}
+                else if (clusterValue=="kcolor7"){return d.kcolor7}
+                else if (clusterValue=="kcolor8"){return d.kcolor8}
+            })
+        rects.data(data)
+            .style('fill', function(d) {
+                if (clusterValue=="kcolor2"){return d.kcolor2}
+                else if (clusterValue=="kcolor3"){return d.kcolor3}
+                else if (clusterValue=="kcolor4"){return d.kcolor4}
+                else if (clusterValue=="kcolor5"){return d.kcolor5}
+                else if (clusterValue=="kcolor6"){return d.kcolor6}
+                else if (clusterValue=="kcolor7"){return d.kcolor7}
+                else if (clusterValue=="kcolor8"){return d.kcolor8}
+            })
+
     }
 
     function arrayToCSV () {
@@ -821,10 +861,12 @@ $(document).ready(function() {
 
 
     var audioCtx = new AudioContext();
-    var audioBuffer;
+    var audioBuffers;
     var audioLoaded = false;
     var currentSegmentStartTimes = [];
-    loadAudio(audioPath);        
+    console.log(audioPath)
+    console.log(audioPaths)
+    loadAudio(audioPaths);        
 
     
     var launchInterval = segmentSize/2;
@@ -854,8 +896,8 @@ $(document).ready(function() {
         $("#gradientSliderText").text("Gradient: " + gradient);
     })
 
-    function loadAudio(fileName) {
-        audioList = [fileName];
+    function loadAudio(fileNames) {
+        audioList = fileNames;
         bufferLoader = new BufferLoader(
             audioCtx,
             audioList,
@@ -864,7 +906,7 @@ $(document).ready(function() {
         bufferLoader.load();
       
         function finishedLoading(bufferList) {
-            audioBuffer = bufferList[0];
+            audioBuffers = bufferList;
             var audioLoaded = true;
             $("#loading-sm").hide()
             console.log("Audio loaded.");
@@ -882,7 +924,18 @@ $(document).ready(function() {
                 startTime = audioCtx.currentTime + (i*launchInterval)/1000;
                 var audioInterval = currentSegmentStartTimes[Math.floor(Math.random()*currentSegmentStartTimes.length)];
                 var source = audioCtx.createBufferSource();
-                source.buffer = audioBuffer;
+
+                
+                if(audioBuffers.length == 1) {
+                    bufferIndex = 0
+                }
+                else {
+                    var bufferIndex = Math.floor(audioInterval/3600000)
+                    audioInterval = audioInterval - (3600000*bufferIndex)    
+                }
+                
+
+                source.buffer = audioBuffers[bufferIndex];
                 var volume = audioCtx.createGain();
                 source.connect(volume);
                 volume.connect(audioCtx.destination);

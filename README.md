@@ -31,7 +31,7 @@ The time it takes for processing is mostly dependent on how many resulting datap
 The processed audio can be stored to avoid having to process it a second time. Simply take a note of the ID in the end of the url, alternatively add it to the "examples.txt" file for convenient access.
 
 ## Publications
-For further information see a [paper](https://www.aclweb.org/anthology/L18-1680) on an early version of the method.
+[Bringing Order to Chaos: A Non-Sequential Approach for Browsing Large Sets of Found Audio Data](https://www.aclweb.org/anthology/L18-1680) (early version of the method)
 
 ## Screenshot
 ![Screenshot](misc/screenshots/img1.png "Exploring a speech by Donald Trump")

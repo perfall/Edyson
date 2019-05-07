@@ -1,0 +1,235 @@
+html, body {
+  height: 95%;
+}
+
+#content {
+    min-height: 100%;
+    height: 100%;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+}
+
+#sequenceMap {
+    width: 100%;
+    height: 50%;
+}
+
+#graphMap {
+    width: 100%;
+    height: 50%;
+}
+
+#floatingCircle {
+	position: absolute;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    visibility: hidden;
+    /*z-index: -1;*/
+    /*opacity: 0.75;*/
+    /*background-image: radial-gradient(black, white);*/
+}
+
+#loading {
+    display: none;
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    margin: -100px 0 0 -150px;
+    background: url(../loading.gif) no-repeat;
+    cursor: wait;
+    }
+
+#loading-sm {
+    width: 150px;
+    height: auto;
+}
+
+.container-fluid {
+    height: 100%;
+}
+
+#row1 {
+    height: 90%;
+}
+
+#row2 {
+    height: 5%;
+}
+
+#row3 {
+    height: 5%;
+}
+
+.plot {
+    cursor: none;
+}
+
+.top-buffer {
+    margin-top:40px; 
+}
+
+.top-buffer-sm {
+    margin-top:25px; 
+}
+
+.top-buffer-xs {
+    margin-top:5px; 
+}
+
+.side-buffer {
+    margin-left:38px;
+    margin-right:20px;
+}
+
+.side-buffer-lg {
+    margin-left:60px;
+    margin-right:60px;
+}
+
+#timeline {
+    background-color: lightgrey;
+    height: 100%;
+    width: : 100%;
+    z-index: 1;
+}
+
+a {
+    /*color: white;*/
+} 
+
+#audioBar {
+    /*position: absolute;*/
+    width: 100%;
+    padding: 0;
+}
+
+audio::-webkit-media-controls-mute-button {
+    display: none !important;
+}
+
+audio::-webkit-media-controls-play-button {
+    /*display: none !important;*/
+    cursor: pointer;
+}
+
+audio::-webkit-media-controls-current-time-display {
+    display: none;
+}
+
+audio::-webkit-media-controls-time-remaining-display {
+    display: none;
+}
+
+audio::-webkit-media-controls-timeline {
+    padding: 0px;
+}
+
+/*Slider settings:*/
+
+.slidecontainer {
+    width: 100%; /* Width of the outside container */
+}
+
+/* The slider itself */
+.slider {
+    -webkit-appearance: none;  /* Override default CSS styles */
+    appearance: none;
+    width: 100%; /* Full-width */
+    height: 10px; /* Specified height */
+    background: #d3d3d3; /* Grey background */
+    outline: none; /* Remove outline */
+    opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+    -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+    transition: opacity .2s;
+    border-radius: 34px;
+}
+
+/* Mouse-over effects */
+.slider:hover {
+    opacity: 1; /* Fully shown on mouse-over */
+}
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */ 
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    width: 20px; /* Set a specific slider handle width */
+    height: 20px; /* Slider handle height */
+    background: #3F729B; /* Green background */
+    cursor: pointer; /* Cursor on hover */
+    border-radius: 34px;
+}
+
+.slider::-moz-range-thumb {
+    width: 20px; /* Set a specific slider handle width */
+    height: 20px; /* Slider handle height */
+    background: #3F729B; /* Green background */
+    cursor: pointer; /* Cursor on hover */
+}
+
+#graphics {
+    background: #3F729B; /* Green background */
+    border-radius: 34px;
+    height: 200px; /* Slider handle height */
+}
+
+.unSelectableText {
+    cursor: none;
+   -moz-user-select: -moz-none;
+   -khtml-user-select: none;
+   -webkit-user-select: none;
+
+   /*
+     Introduced in IE 10.
+     See http://ie.microsoft.com/testdrive/HTML5/msUserSelect/
+   */
+   -ms-user-select: none;
+   user-select: none;
+}
+
+/*More button colors*/
+.btn-warning {
+  color: white !important;
+}
+
+.btn-cat1 {
+  background-color: purple;
+  color: white !important;
+}
+.btn-cat1:hover,
+.btn-cat1:focus {
+  background-color: purple;
+}
+
+.btn-cat2 {
+  background-color: orange;
+  color: white !important;
+}
+.btn-cat2:hover,
+.btn-cat2:focus {
+  background-color: orange;
+}
+
+.btn-cat3 {
+  background-color: teal;
+  color: white !important;
+}
+.btn-cat3:hover,
+.btn-cat3:focus {
+  background-color: teal;
+}
+
+.btn-cat4 {
+  background-color: brown;
+  color: white !important;
+}
+.btn-cat4:hover,
+.btn-cat4:focus {
+  background-color: brown;
+}

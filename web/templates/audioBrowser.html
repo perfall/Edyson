@@ -1,28 +1,25 @@
 <!DOCTYPE html>
 <head>
-	<meta charset="UTF-8">
-    <title>TDA</title>
+    <meta charset="UTF-8">
+    <title>Edyson</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css">
     <link rel="stylesheet" type="text/css" href={{ url_for('static', filename='css/style.css') }}>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
     <script src="//code.jquery.com/jquery.min.js"></script>
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-	<script src="{{ url_for('static', filename='js/BufferLoader.js') }}"></script>
-    <!-- <script src="{{ url_for('static', filename='js/audio.js') }}"></script> -->
+    <script src="{{ url_for('static', filename='js/BufferLoader.js') }}"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-
-    <!-- <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
-	<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>     -->
 </head>
 <body>
-	<div id="loading"></div>
-	<div id="floatingCircle"></div>
-	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div id="loading"></div>
+    <div id="floatingCircle"></div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="navbar-brand" href="#">TDA</a>
+                <a class="navbar-brand" href="#">Edyson</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" style='color:white' href="/">Home</a>
@@ -35,60 +32,20 @@
             </li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" style='color:white' href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Examples
+                Examples
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                	<h6 class="dropdown-header">Demos</h6>
-                    <a class="dropdown-item" href="/1542635376120841">Bd_1697A_m16, kvinna intervju</a>
-                    <a class="dropdown-item" href="/1542637551725332">Gustav Karlsson, 100/50</a>
-                    <a class="dropdown-item" href="/1542638172634069">Bd_1698_m16, man intervju</a>
-                    <a class="dropdown-item" href="/1542640010556535">Nelson klein, 3h 1000/1000</a>
-                    <a class="dropdown-item" href="/15427073855052109">Nelson klein, 1h 1000/1000</a>
-                    <h6 class="dropdown-header">Speech</h6>
-                    <a class="dropdown-item" href="/1551098902644093">Donald Trump, state of the union speech ~1h. Segment size: 1000ms Step size: 1000ms</a>
-                    <a class="dropdown-item" href="/154115026407875">Nelson Klein, old Swedish recording ~1h. Segment size: 1000ms Step size: 1000ms</a>
-                    <a class="dropdown-item" href="/15384657614690912">Nelson Klein, ~10min.</a>
-                    <a class="dropdown-item" href="/15380354025784261">Bible, old testamente ~1h. Segment size: 1000ms Step size: 1000ms</a>
-                    <a class="dropdown-item" href="/15380609347825658">Tester, ~15 000 points</a>
-                    <a class="dropdown-item" href="/1538392316232363">Isca medalist</a>
-                    <a class="dropdown-item" href="/15383927662605581">Isca medalist, small</a>
-                    <a class="dropdown-item" href="/15384834277662258">Isca medalist, 50/25, mfcc-norm</a>
-                    <a class="dropdown-item" href="/1538568353258615">Gustav Karlsson ~5min, 100/50, mfcc-norm</a>
-                    <a class="dropdown-item" href="/15385687602075908">Gustav Karlsson ~5min, 100/50, mfcc</a>
-                    <a class="dropdown-item" href="/1542363964108663">Nelson Klein, all, sampled 1/10 1000ms</a>
-                    <a class="dropdown-item" href="/1551099364893867">Apollo11 - track1-6</a>
-                    <a class="dropdown-item" href="/1551182393648777">Nixon-tapes-~10hours</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="/1538745329258014">Eva breathing, mfcc</a>
-                    <div class="dropdown-divider"></div>
-                    <h6 class="dropdown-header">Music</h6>
-                    <a class="dropdown-item" href="/1538036173545738">Ambient music, ~1h. Segment size: 1000ms Step size: 1000ms</a>
-                    <div class="dropdown-divider"></div>
-                    <h6 class="dropdown-header">Men-Wom</h6>
-                    <a class="dropdown-item" href="/1544698015935603">100/0</a>
-                    <a class="dropdown-item" href="/1544698028302439">90/10</a>
-                    <a class="dropdown-item" href="/1544696648674939">80/20</a>
-                    <a class="dropdown-item" href="/15446980450478258">70/30</a>
-                    <a class="dropdown-item" href="/1544696674840629">60/40</a>
-                    <a class="dropdown-item" href="/1544698053070113">50/50</a>
-                    <a class="dropdown-item" href="/1544696691859848">40/60</a>
-                    <a class="dropdown-item" href="/1544698061390982">30/70</a>
-                    <a class="dropdown-item" href="/1544696701338559">20/80</a>
-                    <a class="dropdown-item" href="/1544698074211333">10/90</a>
-                    <a class="dropdown-item" href="/1544698094841962">0/100</a>
-                    <div class="dropdown-divider"></div>
-                    <h6 class="dropdown-header">Gustav-Taras</h6>
-                    <a class="dropdown-item" href="/15486663362783911">Natural Talking 1/3</a>
-                    <a class="dropdown-item" href="/1548666774172491">Natural Talking 2/3</a>
-                    <a class="dropdown-item" href="/1548666888087272">Natural Talking 3/3</a>
+                    {% for example in examples %}
+                    <a class="dropdown-item" href="/{{example}}">{{examples[example]}}</a>    
+                    {% endfor %}
                 </div>
             </li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" style='color:white' href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    K-means coloring
+                Automatic clustering
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown" id="buttonGroup9">
-                	<h6 class="dropdown-header">Cluster size</h6>
+                    <h6 class="dropdown-header">K-means cluster size</h6>
                     <button type="button" value="kcolor2" class="btn-block btn btn-light btn-sm">2</button>
                     <button type="button" value="kcolor3" class="btn-block btn btn-light btn-sm">3</button>
                     <button type="button" value="kcolor4" class="btn-block btn btn-light btn-sm">4</button>
@@ -96,6 +53,7 @@
                     <button type="button" value="kcolor6" class="btn-block btn btn-light btn-sm">6</button>
                     <button type="button" value="kcolor7" class="btn-block btn btn-light btn-sm">7</button>
                     <button type="button" value="kcolor8" class="btn-block btn btn-light btn-sm">8</button>
+                    <button type="button" value="kcolor20" class="btn-block btn btn-light btn-sm">20</button>
                 </div>
             </li>
         </ul>
@@ -105,192 +63,203 @@
             <button class="btn btn-outline my-sm-0" type="submit">Go</button>
         </form>
     </nav>
-	<div class="container-fluid" id="content">
-		<div class="row top-buffer side-buffer" id="row1">
-			<div class="col-sm-1">
-	            <h6>Label (hold shift)</h6>
-	            <div id="buttonGroup1">
-	            	<button type="button" value="black" class="btn-block btn btn-dark top-buffer-sm btn-sm">None (#0)</button>
-
-					<div class="input-group top-buffer-xs">
-	                	<input type="text" id="blueLabel" class="form-control" value="label1">
-					  <div class="input-group-prepend">
-					    <button type="button" value="blue" class="btn-block btn btn-primary btn-sm">(#1)</button>
-					  </div>
-					</div>
-
-					<div class="input-group top-buffer-xs">
-	                	<input type="text" id="greenLabel" class="form-control" value="label2">
-					  <div class="input-group-prepend">
-					    <button type="button" value="green" class="btn-block btn btn-success btn-sm">(#2)</button>
-					  </div>
-					</div>
-
-					<div class="input-group top-buffer-xs">
-	                	<input type="text" id="yellowLabel" class="form-control" value="label3">
-					  <div class="input-group-prepend">
-					    <button type="button" value="yellow" class="btn-block btn btn-warning btn-sm">(#3)</button>
-					  </div>
-					</div>
-
-					<div class="input-group top-buffer-xs">
-	                	<input type="text" id="redLabel" class="form-control" value="label4">
-					  <div class="input-group-prepend">
-					    <button type="button" value="red" class="btn-block btn btn-danger btn-sm">(#4)</button>
-					  </div>
-					</div>
-
-					<div class="input-group top-buffer-xs">
-	                	<input type="text" id="purpleLabel" class="form-control" value="label5">
-					  <div class="input-group-prepend">
-					    <button type="button" value="purple" class="btn-block btn btn-cat1 btn-sm">(#5)</button>
-					  </div>
-					</div>
-
-					<div class="input-group top-buffer-xs">
-	                	<input type="text" id="orangeLabel" class="form-control" value="label6">
-					  <div class="input-group-prepend">
-					    <button type="button" value="orange" class="btn-block btn btn-cat2 btn-sm">(#6)</button>
-					  </div>
-					</div>
-
-					<div class="input-group top-buffer-xs">
-	                	<input type="text" id="tealLabel" class="form-control" value="label7">
-					  <div class="input-group-prepend">
-					    <button type="button" value="teal" class="btn-block btn btn-cat3 btn-sm">(#7)</button>
-					  </div>
-					</div>
-
-					<div class="input-group top-buffer-xs">
-	                	<input type="text" id="brownLabel" class="form-control" value="label8">
-					  <div class="input-group-prepend">
-					    <button type="button" value="brown" class="btn-block btn btn-cat4 btn-sm">(#8)</button>
-					  </div>
-					</div>
-
-				</div>
-
-				<div id="buttonGroup7">
-            		<button type="button" class="btn btn-block btn-dark top-buffer-sm btn-sm">Color all</button>
-            	</div>
-            	<div id="buttonGroup8">
-            		<button type="button" class="btn btn-block btn-dark top-buffer-sm btn-sm">Color with Kmeans</button>
-            	</div>
-            	<hr>
-				<h6>Algorithm</h6>
-                <div id="buttonGroup2">
-					<button type="button" value="tsne" class="btn btn-block btn-dark top-buffer-sm btn-sm">t-SNE</button>
-	                <button type="button" value="pca" class="btn btn-block btn-dark top-buffer-sm btn-sm">PCA</button>
-	                <button type="button" value="som" class="btn btn-block btn-dark top-buffer-sm btn-sm">SOM</button>
-	                <button type="button" value="umap" class="btn btn-block btn-dark top-buffer-sm btn-sm">UMAP</button>
-	            </div>
+    <div class="container-fluid" id="content">
+        <div class="row top-buffer side-buffer" id="row1">
+            <div class="col-sm-1">
+                <h5>Annotation</h5>
+                <div>
+                    <div class="buttonGroup1">
+                        <button type="button" value="black" class="btn-block btn btn-dark top-buffer-sm btn-sm">None (#0)</button>
+                    </div>
+                    <div class="input-group top-buffer-xs">
+                        <div class="input-group-prepend lockButton">
+                            <button type="button" color="blue" value="unlocked" class="btn-block btn btn-dark btn-sm">
+                            <i class="fa fa-unlock" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <input type="text" id="blueLabel" class="form-control" value="label1">
+                        <div class="input-group-prepend colorAudioButton">
+                            <button type="button" color="blue" value="silent" class="btn-block btn btn-light btn-sm">
+                            <i class="categoryPlay fa fa-play" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <div class="input-group-prepend buttonGroup1">
+                            <button type="button" value="blue" class="btn-block btn btn-primary btn-sm">(#1)</button>
+                        </div>
+                    </div>
+                    <div class="input-group top-buffer-xs">
+                        <div class="input-group-prepend lockButton">
+                            <button type="button" color="green" value="unlocked" class="btn-block btn btn-dark btn-sm">
+                            <i class="fa fa-unlock" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <input type="text" id="greenLabel" class="form-control" value="label2">
+                        <div class="input-group-prepend colorAudioButton">
+                            <button type="button" color="green" value="silent" class="btn-block btn btn-light btn-sm">
+                            <i class="categoryPlay fa fa-play" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <div class="input-group-prepend buttonGroup1">
+                            <button type="button" value="green" class="btn-block btn btn-success btn-sm">(#2)</button>
+                        </div>
+                    </div>
+                    <div class="input-group top-buffer-xs">
+                        <div class="input-group-prepend lockButton">
+                            <button type="button" color="yellow" value="unlocked" class="btn-block btn btn-dark btn-sm">
+                            <i class="fa fa-unlock" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <input type="text" id="yellowLabel" class="form-control" value="label3">
+                        <div class="input-group-prepend colorAudioButton">
+                            <button type="button" color="yellow" value="silent" class="btn-block btn btn-light btn-sm">
+                            <i class="categoryPlay fa fa-play" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <div class="input-group-prepend buttonGroup1">
+                            <button type="button" value="yellow" class="btn-block btn btn-warning btn-sm">(#3)</button>
+                        </div>
+                    </div>
+                    <div class="input-group top-buffer-xs">
+                        <div class="input-group-prepend lockButton">
+                            <button type="button" color="red" value="unlocked" class="btn-block btn btn-dark btn-sm">
+                            <i class="fa fa-unlock" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <input type="text" id="redLabel" class="form-control" value="label4">
+                        <div class="input-group-prepend colorAudioButton">
+                            <button type="button" color="red" value="silent" class="btn-block btn btn-light btn-sm">
+                            <i class="categoryPlay fa fa-play" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <div class="input-group-prepend buttonGroup1">
+                            <button type="button" value="red" class="btn-block btn btn-danger btn-sm">(#4)</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="buttonGroup7">
+                    <button type="button" class="btn btn-block btn-dark top-buffer-sm btn-sm">Color all</button>
+                </div>
                 <hr>
-                <h6>Cursor</h6>
+                <h5>Algorithm</h5>
+                <div class="buttonGroup2">
+                    <button type="button" value="tsne" class="btn btn-block btn-success top-buffer-sm btn-sm">t-SNE</button>
+                    <button type="button" value="pca" class="btn btn-block btn-dark top-buffer-sm btn-sm">PCA</button>
+                    <button type="button" value="som" class="btn btn-block btn-dark top-buffer-sm btn-sm">SOM</button>
+                    <button type="button" value="umap" class="btn btn-block btn-dark top-buffer-sm btn-sm">UMAP</button>
+                    <!-- <button type="button" value="ae" class="btn btn-block btn-dark top-buffer-sm btn-sm">AutoEncoder</button> -->
+                </div>
+                <hr>
+                <h5>Cursor size</h5>
                 <div id="buttonGroup3">
-					<button type="button" value="50" class="btn btn-block btn-dark top-buffer-sm btn-sm">Small (#Q)</button>
-	                <button type="button" value="100" class="btn btn-block btn-dark top-buffer-sm btn-sm">Medium (#W)</button>
-	                <button type="button" value="150" class="btn btn-block btn-dark top-buffer-sm btn-sm">Large (#E)</button>
-	                <button type="button" value="500" class="btn btn-block btn-dark top-buffer-sm btn-sm">XL (#R)</button>
-	            </div>
-				<hr>
-                <h6>Retrain colored points</h6>
-	            <div id="buttonGroup5">
-                	<button type="button" value="mfcc1" class="btn btn-block btn-dark top-buffer-sm btn-sm">Run</button>
-	            </div>
-				<hr>
-                <h6>Export</h6>
+                    <button type="button" id = "buttonSize50" value="50" class="btn btn-dark">S</button>
+                    <button type="button" id = "buttonSize100" value="100" class="btn btn-success">M</button>
+                    <button type="button" id = "buttonSize150" value="150" class="btn btn-dark">L</button>
+                    <button type="button" id = "buttonSize300" value="300" class="btn btn-dark">XL</button>
+                </div>
+                <hr>
+                <h5>Retrain colored points</h5>
+                <div id="buttonGroup5">
+                    <button type="button" value="mfcc1" class="btn btn-block btn-dark top-buffer-sm btn-sm">Run</button>
+                </div>
+                <hr>
+                <h5>Export</h5>
                 <div id="buttonGroup4">
-                	<button type="button" value="csv" class="btn btn-block btn-dark top-buffer-sm btn-sm">CSV</button>
-	            </div>
-	            <hr>
-	            <h6>Median filter value</h6>
+                    <button type="button" value="csv" class="btn btn-block btn-dark top-buffer-sm btn-sm">CSV</button>
+                </div>
+                <hr>
+                <h5>Median filter value</h5>
                 <div id="medianFilterValueBox">
-                	<input type="number" id="medianfilterValue" value=2>
-	            </div>
-	            
-			</div>
-			<div class="col-sm-10">
-				<svg id="map"><text id="loadText" x="50%" y="50%" text-anchor="middle" opacity="0.8" fill="black" font-size="100px" font-family="Arial" dy=".2em" style="display:none">Loading..</text></svg>	
-			</div>
-			<div class="col-sm-1">
-				<div id="metadata">
-	                <h4>Metadata</h4>
-	                <h6>Filename</h6>
-	                <p id="metaAudioPath"><script>$("#metaAudioPath").text('{{audioPath}}'.split("/").slice(-1))</script></p>
-	                <h6>Duration</h6>
-	                <p id="metaDuration"><script>$("#metaDuration").text(msToTime('{{audioDuration}}'))</script></p>
-	                <h6>Segment size</h6>
-	                <p>{{segmentSize}} ms</p>
-	                <h6>Step size</h6>
-	                <p>{{stepSize}} ms</p>
-	                <h6>Datapoints</h6>
-	                <p>{{datapoints}}</p>
-	            </div>
-	            <div id="audioSettings" class="top-buffer">
-	                <h4>Audio settings</h4>
-	                <h6 id="launchSliderText" class="top-buffer-sm"></h6>
-	                <div class="slidecontainer">
-	                    <input type="range" min="10" max="1000" value="250" step="10" class="slider" id="launchSlider">
-	                </div>
-	                <h6 id="fadeSliderText" class="top-buffer-sm"></h6>
-	                <div class="slidecontainer">
-	                    <input type="range" min="0" max="500" value="250" step="10" class="slider" id="fadeSlider">
-	                </div>
-	                <h6 id="gradientSliderText" class="top-buffer-sm"></h6>
-	                <div class="slidecontainer">
-	                    <input type="range" min="0" max="100" value="50" step="10" class="slider" id="gradientSlider">
-	                </div>
-	                <!-- <h6 id="paddingSliderText" class="top-buffer-sm"></h6>
-	                <div class="slidecontainer">
-	                    <input type="range" min="0" max="0" value="500" step="10" class="slider" id="paddingSlider">
-	                </div> -->
-	                <!-- <h6 class="top-buffer-sm">Duration: </h6>
-	                <div class="slidecontainer">
-	                    <input type="range" min="50" max="3000" value="1500" step="50" class="slider" id="durationSlider" disabled>
-	                </div> -->
-	            </div>
-	            <hr>
-	                <h6>Sequential playback</h6>
-	                <div id="buttonGroup6">
-	                	<button type="button" value ="play" class="btn btn-block btn-dark top-buffer-sm btn-sm">Play</button>
-	                	<button type="button" value ="pause" class="btn btn-block btn-dark top-buffer-sm btn-sm">Pause</button>
-	                	<button type="button" value ="stop" class="btn btn-block btn-dark top-buffer-sm btn-sm">Stop</button>
-		            </div>
-	            <hr>
-	            <div class="top-buffer text-center">
-	                <img id="loading-sm" src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif">
-	            </div>
-			</div>
-		</div>
-		<div class="row side-buffer top-buffer-sm" id="row2">
-			<svg id="sequenceMap">
-				<rect id="timeBar"></rect>
-				<span id="timeBarDuration" class="unSelectableText"></span>
-			</svg>
-		</div>
-		<div class="row side-buffer top-buffer-sm" id="row3">
-			<svg id="graphMap"></svg>
-		</div>
-		<audio id="audioBar"controls controlsList="nodownload" style="display:none">
-	  		<source src="{{audioPath}}">
-		</audio>
-		<!-- <div class="row top-buffer-sm" id="row3">
-			<div class="col">
-				<audio id="audioBar"controls controlsList="nodownload">
-			  		<source src="{{audioPath}}">
-				</audio>
-			</div>
-		</div> -->
-	</div>
-	<script type="text/javascript">
-		// Define variables passed from app.py, they are used in js-file
-		var audioDuration = '{{audioDuration}}';
-		var segmentSize = '{{segmentSize}}';
-		var stepSize = '{{stepSize}}';
-		var audioPath = '{{audioPath}}';
-		var sessionKey = '{{session_key}}';
-		var data = {{data | tojson}};
-		var audioPaths = '{{audioPaths}}'.split(",");
-		//audioPaths = audioPaths.split(",")
-	</script>
+                    <input type="number" id="medianfilterValue" value=2>
+                </div>
+            </div>
+            <div class="col-sm-10">
+                <svg id="map">
+                    <text id="loadText" x="50%" y="50%" text-anchor="middle" opacity="0.8" fill="black" font-size="100px" font-family="Arial" dy=".2em" style="display:none">Loading..</text>
+                    <text id="listeningText" x="50%" y="4%" text-anchor="middle" opacity="0.8" fill="black" font-size="60px" font-family="Arial" dy=".2em" style="display:none">Listening</text>
+                    <text id="coloringText" x="50%" y="4%" text-anchor="middle" opacity="0.8" fill="black" font-size="60px" font-family="Arial" dy=".2em" style="display:none">Coloring</text>
+                    <rect id="listeningMode"x="0%" y ="0%" stroke="black" stroke-dasharray="5" stroke-width="25" fill="none" width="100%" height="100%" style="display:none"></rect>
+                    <rect id="coloringMode"x="0%" y ="0%" stroke="black" stroke-width="25" fill="none" width="100%" height="100%" style="display:none"></rect>
+                </svg>
+            </div>
+            <div class="col-sm-1">
+                <div id="metadata">
+                    <h5>Metadata</h5>
+                    <h6>Filename</h6>
+                    <p id="metaAudioPath">
+                        <script>$("#metaAudioPath").text('{{audioPath}}'.split("/").slice(-1))</script>
+                    </p>
+                    <h6>Duration</h6>
+                    <p id="metaDuration">
+                        <script>$("#metaDuration").text(msToTime('{{audioDuration}}'))</script>
+                    </p>
+                    <h6>Segment size</h6>
+                    <p>{{segmentSize}} ms</p>
+                    <h6>Step size</h6>
+                    <p>{{stepSize}} ms</p>
+                    <h6>Datapoints</h6>
+                    <p>{{datapoints}}</p>
+                </div>
+                <h5 class="top-buffer-sm">Sampling</h5>
+                <div id="buttonGroup8">
+                    <button type="button" value ="10" class="btn btn-dark top-buffer-sm btn-sm">10%</button>
+                    <button type="button" value ="2" class="btn btn-dark top-buffer-sm btn-sm">50%</button>
+                    <button type="button" value ="1" class="btn btn-success top-buffer-sm btn-sm">100%</button>
+                </div>
+                <div id="audioSettings" class="top-buffer">
+                    <h5>Audio settings</h5>
+                    <h6 id="launchSliderText" class="top-buffer-sm"></h6>
+                    <div class="slidecontainer">
+                        <input type="range" min="10" max="1000" value="250" step="10" class="slider" id="launchSlider">
+                    </div>
+                    <h6 id="fadeSliderText" class="top-buffer-sm"></h6>
+                    <div class="slidecontainer">
+                        <input type="range" min="0" max="500" value="250" step="10" class="slider" id="fadeSlider">
+                    </div>
+                    <!-- <h6 id="gradientSliderText" class="top-buffer-sm"></h6>
+                        <div class="slidecontainer">
+                            <input type="range" min="0" max="100" value="50" step="10" class="slider" id="gradientSlider">
+                        </div> -->
+                    <!-- <h6 id="paddingSliderText" class="top-buffer-sm"></h6>
+                        <div class="slidecontainer">
+                            <input type="range" min="0" max="0" value="500" step="10" class="slider" id="paddingSlider">
+                        </div> -->
+                    <!-- <h6 class="top-buffer-sm">Duration: </h6>
+                        <div class="slidecontainer">
+                            <input type="range" min="50" max="3000" value="1500" step="50" class="slider" id="durationSlider" disabled>
+                        </div> -->
+                </div>
+                <hr>
+                <h5>Sequential playback</h5>
+                <div id="buttonGroup6">
+                    <button type="button" value ="play" class="btn btn-block btn-dark top-buffer-sm btn-sm">Play</button>
+                    <button type="button" value ="pause" class="btn btn-block btn-dark top-buffer-sm btn-sm">Pause</button>
+                    <button type="button" value ="stop" class="btn btn-block btn-success top-buffer-sm btn-sm">Stop</button>
+                </div>
+                <div class="top-buffer-sm text-center">
+                    <p id="loading-label">Audio loading...</p>
+                    <img id="loading-sm" src="https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif">
+                </div>
+            </div>
+        </div>
+        <div class="row side-buffer top-buffer-sm h-5" id="row2">
+            <svg id="sequenceMap">
+                <rect id="timeBar"></rect>
+                <span id="timeBarDuration" class="unSelectableText"></span>
+            </svg>
+            <svg id="graphMap"></svg>
+        </div>
+        <audio id="audioBar"controls controlsList="nodownload" style="display:none">
+            <source src="{{audioPath}}">
+        </audio>
+    </div>
+    <script type="text/javascript">
+        // Define variables passed from app.py, they are used in js-file
+        var audioDuration = '{{audioDuration}}';
+        var segmentSize = '{{segmentSize}}';
+        var stepSize = '{{stepSize}}';
+        var audioPath = '{{audioPath}}';
+        var sessionKey = '{{session_key}}';
+        var data = {{data | tojson}};
+        var audioPaths = '{{audioPaths}}'.split(",");
+    </script>
 </body>

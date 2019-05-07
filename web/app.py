@@ -21,6 +21,9 @@ app = Flask(__name__)
 app.secret_key = 'hejhej00'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+with open("examples.txt", "r") as examples_file:
+    examples = {line.split("\t")[0]:line.split("\t")[1] for line in examples_file}
+
 # Checks so file is allowed
 def allowed_file(filename):
     return '.' in filename and \
@@ -29,7 +32,7 @@ def allowed_file(filename):
 @app.route('/')
 def upload_file():
     #subprocess.call('rm /uploads/*', shell=True)
-    return render_template('index.html')
+    return render_template('index.html', examples=examples)
 
 # When audio is submitted, checks so audio is valid, uploads it, and sends parameters
 # to audio_processing which in turn generates files needed for browser, then 
@@ -61,7 +64,23 @@ def process_audio() -> str:
     step_size = float(request.form['radio2'])
     config_file = request.form['radio3']
 
+    print(session_key)
+    print(config_file)
+    print(segment_size)
+    print(step_size)
     audio_processing.main(session_key, config_file, segment_size, step_size)
+
+    #audio_processing.main("tester_interspeech", "MFCC.conf", 500, 500)
+    # audio_processing.main("eval2", "MFCC.conf", 500, 500)
+    # audio_processing.main("eval1", "MFCC.conf", 500, 500)
+    # audio_processing.main("train6", "MFCC.conf", 500, 500)
+    # audio_processing.main("train5", "MFCC.conf", 500, 500)
+    # audio_processing.main("train4", "MFCC.conf", 500, 500)
+    # audio_processing.main("train3", "MFCC.conf", 500, 500)
+    # audio_processing.main("train2", "MFCC.conf", 500, 500)
+    # audio_processing.main("train1", "MFCC.conf", 500, 500)
+    # audio_processing.main("dev2", "MFCC.conf", 500, 500)
+    # audio_processing.main("dev1", "MFCC.conf", 500, 500)
     
     return redirect("/"+session_key)
 
@@ -131,7 +150,8 @@ def load_browser(session_key) -> str:
                                 datapoints=len(data),
                                 session_key=session_key, 
                                 audioPath="../" + metadata["audio_path"],
-                                audioPaths = chunks)
+                                audioPaths = chunks,
+                                examples = examples)
     else:
         return "<h3>Something went wrong, the files for the this audio session does not exist</h3>"
 

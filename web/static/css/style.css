@@ -14,10 +14,12 @@ html, body {
 
 #sequenceMap {
     width: 100%;
+    height: 50%;
 }
 
 #graphMap {
     width: 100%;
+    height: 50%;
 }
 
 #floatingCircle {
@@ -44,7 +46,7 @@ html, body {
     }
 
 #loading-sm {
-    width: 200px;
+    width: 150px;
     height: auto;
 }
 

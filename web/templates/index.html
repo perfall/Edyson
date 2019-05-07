@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>TDA</title>
+        <title>Edyson</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css">
         <link rel="stylesheet" type="text/css" href={{ url_for('static', filename='css/style.css') }}>
@@ -27,7 +27,7 @@
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="navbar-brand" href="#">TDA</a>
+                <a class="navbar-brand" href="#">Edyson</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" style='color:white' href="/">Home</a>
@@ -43,49 +43,9 @@
                     Examples
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <h6 class="dropdown-header">Demos</h6>
-                    <a class="dropdown-item" href="/1542635376120841">Bd_1697A_m16, kvinna intervju</a>
-                    <a class="dropdown-item" href="/1542637551725332">Gustav Karlsson, 100/50</a>
-                    <a class="dropdown-item" href="/1542638172634069">Bd_1698_m16, man intervju</a>
-                    <a class="dropdown-item" href="/1542640010556535">Nelson klein, 3h 1000/1000</a>
-                    <a class="dropdown-item" href="/15427073855052109">Nelson klein, 1h 1000/1000</a>
-                    <h6 class="dropdown-header">Speech</h6>
-                    <a class="dropdown-item" href="/1551098902644093">Donald Trump, state of the union speech ~1h. Segment size: 1000ms Step size: 1000ms</a>
-                    <a class="dropdown-item" href="/154115026407875">Nelson Klein, old Swedish recording ~1h. Segment size: 1000ms Step size: 1000ms</a>
-                    <a class="dropdown-item" href="/15384657614690912">Nelson Klein, ~10min.</a>
-                    <a class="dropdown-item" href="/15380354025784261">Bible, old testamente ~1h. Segment size: 1000ms Step size: 1000ms</a>
-                    <a class="dropdown-item" href="/15380609347825658">Tester, ~15 000 points</a>
-                    <a class="dropdown-item" href="/1538392316232363">Isca medalist</a>
-                    <a class="dropdown-item" href="/15383927662605581">Isca medalist, small</a>
-                    <a class="dropdown-item" href="/15384834277662258">Isca medalist, 50/25, mfcc-norm</a>
-                    <a class="dropdown-item" href="/1538568353258615">Gustav Karlsson ~5min, 100/50, mfcc-norm</a>
-                    <a class="dropdown-item" href="/15385687602075908">Gustav Karlsson ~5min, 100/50, mfcc</a>
-                    <a class="dropdown-item" href="/1542363964108663">Nelson Klein, all, sampled 1/10 1000ms</a>
-                    <a class="dropdown-item" href="/1551099364893867">Apollo11 - track1-6</a>
-                    <a class="dropdown-item" href="/1551182393648777">Nixon-tapes-~10hours</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="/1538745329258014">Eva breathing, mfcc</a>
-                    <div class="dropdown-divider"></div>
-                    <h6 class="dropdown-header">Music</h6>
-                    <a class="dropdown-item" href="/1538036173545738">Ambient music, ~1h. Segment size: 1000ms Step size: 1000ms</a>
-                    <div class="dropdown-divider"></div>
-                    <h6 class="dropdown-header">Men-Wom</h6>
-                    <a class="dropdown-item" href="/1544698015935603">100/0</a>
-                    <a class="dropdown-item" href="/1544698028302439">90/10</a>
-                    <a class="dropdown-item" href="/1544696648674939">80/20</a>
-                    <a class="dropdown-item" href="/15446980450478258">70/30</a>
-                    <a class="dropdown-item" href="/1544696674840629">60/40</a>
-                    <a class="dropdown-item" href="/1544698053070113">50/50</a>
-                    <a class="dropdown-item" href="/1544696691859848">40/60</a>
-                    <a class="dropdown-item" href="/1544698061390982">30/70</a>
-                    <a class="dropdown-item" href="/1544696701338559">20/80</a>
-                    <a class="dropdown-item" href="/1544698074211333">10/90</a>
-                    <a class="dropdown-item" href="/1544698094841962">0/100</a>
-                    <div class="dropdown-divider"></div>
-                    <h6 class="dropdown-header">Gustav-Taras</h6>
-                    <a class="dropdown-item" href="/15486663362783911">Natural Talking 1/3</a>
-                    <a class="dropdown-item" href="/1548666774172491">Natural Talking 2/3</a>
-                    <a class="dropdown-item" href="/1548666888087272">Natural Talking 3/3</a>
+                    {% for example in examples %}
+                        <a class="dropdown-item" href="/{{example}}">{{examples[example]}}</a>    
+                    {% endfor %}
                 </div>
             </li>
         </ul>
@@ -97,7 +57,7 @@
     </nav>
         <div class="container" id="content">
             <div class="jumbotron">
-                <h1>Temporally Disassembled Audio</h1>
+                <h1>Edyson</h1>
                 <h5>Explore your audio with unsupervised machine learning</h5>
             </div>
             <h5>Upload your audio (wav or mp3)</h5>
@@ -227,7 +187,7 @@
                         <label>MFCC (normalized by mean)</label>
                     </div>
                 </div>
-                <div class="pretty p-default p-round">
+                <!-- <div class="pretty p-default p-round">
                     <input type="radio" name="radio3" value="PLP.conf">
                     <div class="state">
                         <label>PLP</label>
@@ -262,7 +222,7 @@
                     <div class="state">
                         <label>Emotion features</label>
                     </div>
-                </div>
+                </div> -->
             </div>
             <br>
             <input type="submit" id="submitNewAudio" class="btn btn-info" value="Process audio" onclick="showLoadingGif()">

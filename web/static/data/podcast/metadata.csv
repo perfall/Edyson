@@ -1,0 +1,2 @@
+audio_duration,audio_path,segment_size,step_size,chunks
+600000,static/uploads/podcast/podcast.wav,1000.0,1000.0,static/uploads/podcast/podcast.wav

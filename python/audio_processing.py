@@ -17,11 +17,15 @@ import csv
 import sompy
 import umap
 from sklearn.cluster import KMeans
+from sklearn.cluster import DBSCAN
+#from autoencoder import AE
 
 
 smilextract = '../opensmile-2.3.0/SMILExtract'
+config_dir = '../opensmile-2.3.0/config/'
 
 color_dict = {
+    "-1": "black",
     "0": "blue",
     "1": "green",
     "2": "yellow",
@@ -29,7 +33,19 @@ color_dict = {
     "4": "purple",
     "5": "orange",
     "6": "teal",
-    "7": "brown"
+    "7": "brown",
+    "8": "black",
+    "9": "blue",
+    "10": "green",
+    "11": "yellow",
+    "12": "red",
+    "13": "purple",
+    "14": "orange",
+    "15": "teal",
+    "16": "brown",
+    "17": "black",
+    "18": "blue",
+    "19": "green",
 }
 
 def update_config(config_file, segment_size, step_size):
@@ -88,10 +104,10 @@ def main(session_key, config_file, segment_size, step_size):
     output_path = output_dir + audio_name.split(".")[0] + ".mfcc.htk"
 
     # Prepend path to config file
-    config_file = '../opensmile-2.3.0/config/' + config_file
+    config_file = config_dir + config_file
 
     # Update config file with segment- and steplength, divided by 1000 to get second-format
-    update_config(config_file, str(segment_size/1000), str(step_size/1000))
+    update_config(config_file, str(segment_size/10000), str(step_size/10000))
 
     # Run opensmile to output features in output dir
     subprocess.call([smilextract, "-C", config_file, "-I", audio_path, "-O", output_path])
@@ -100,6 +116,16 @@ def main(session_key, config_file, segment_size, step_size):
     htk_reader = HTKFile()
     htk_reader.load(output_path)
     result = np.array(htk_reader.data)
+    
+    # Flatten concatenate ten vectors at a time, resulting in 39*10 dimensionality per snippet
+    new_result = []
+    temp_list = []
+    for vec in result:
+        temp_list.append(vec)
+        if len(temp_list) == 10:
+            new_result.append(np.concatenate(tuple(temp_list), axis=0))
+            temp_list = []
+    result = np.array(new_result)
     
     # Run data through t-SNE
     tsne = TSNE(n_components=2, perplexity=25)#, random_state=None)
@@ -114,18 +140,12 @@ def main(session_key, config_file, segment_size, step_size):
     # Run data through SOM
     som = True
     if som:
-        # som = MiniSom(10, 10, len(result[0]), sigma=0.3, learning_rate=0.1)
-        # som.train_random(result, 2000)
-        # print(np.array([np.array(som.winner(i)) for i in range(len(result))]) )
-        # Y3 = convert_range(np.array([np.array(som.winner(i)) for i in range(len(result))]))
-        # print("SOM done")
         print("SOM-grid-size: ", int(len(result)**0.5))
         mapsize = [int(len(result)**0.5), int(len(result)**0.5)]
         if mapsize[0] > 100:
             mapsize = [100, 100]
         som = sompy.SOMFactory.build(result, mapsize, mask=None, mapshape='planar', lattice='rect', normalization='var', initialization='pca', neighborhood='gaussian', training='batch', name='sompy')  # this will use the default parameters, but i can change the initialization and neighborhood methods
         som.train(n_job=1, verbose='info')  # verbose='debug' will print more, and verbose=None wont print anything
-        #som_output = np.array([np.array([0, int(bmu)]) if int(bmu) < 10 else np.array([int(str(bmu)[0]), int(str(bmu)[1])]) for bmu in som._bmu[0]])
         som_output = np.array(np.array([np.array(np.unravel_index(int(bmu), (mapsize[0],mapsize[0]))) for bmu in som._bmu[0]]))
         Y3 = convert_range(som_output)
         print("SOM done")
@@ -139,6 +159,14 @@ def main(session_key, config_file, segment_size, step_size):
         print("UMAP done")
     else:
         Y4 = convert_range(np.array([np.array([random.randint(-50, 50), random.randint(-50, 50)]) for i in range(len(Y2))]))
+
+    # Run data through autoencoder
+    ae = False
+    if ae:
+        Y5 = convert_range(AE(result))
+    else:
+        Y5 = convert_range(np.array([np.array([random.randint(-50, 50), random.randint(-50, 50)]) for i in range(len(Y2))]))
+    print("Autoencoder done")
 
     # K-means on raw features
     kmeans2 = KMeans(n_clusters=2, random_state=0).fit(result)
@@ -155,11 +183,14 @@ def main(session_key, config_file, segment_size, step_size):
     print("kmeans7 done")
     kmeans8 = KMeans(n_clusters=8, random_state=0).fit(result)
     print("kmeans8 done")
+    kmeans20 = KMeans(n_clusters=20, random_state=0).fit(result)
+    print("kmeans20 done")
+
 
     # Format t-SNE output to correct dictionary format
     data = []
     i = 0
-    for coord1, coord2, coord3, coord4, cluster_index2, cluster_index3, cluster_index4, cluster_index5, cluster_index6, cluster_index7, cluster_index8 in zip(Y1, Y2, Y3, Y4, kmeans2.labels_, kmeans3.labels_, kmeans4.labels_, kmeans5.labels_, kmeans6.labels_, kmeans7.labels_, kmeans8.labels_):
+    for coord1, coord2, coord3, coord4, coord5, cluster_index2, cluster_index3, cluster_index4, cluster_index5, cluster_index6, cluster_index7, cluster_index8, cluster_index20 in zip(Y1, Y2, Y3, Y4, Y5, kmeans2.labels_, kmeans3.labels_, kmeans4.labels_, kmeans5.labels_, kmeans6.labels_, kmeans7.labels_, kmeans8.labels_, kmeans20.labels_):
         data.append({
             "id":i, 
             "tsneX":float(coord1[0]), 
@@ -170,6 +201,8 @@ def main(session_key, config_file, segment_size, step_size):
             "somY":float(coord3[1]), 
             "umapX":float(coord4[0]), 
             "umapY":float(coord4[1]), 
+            "aeX":float(coord5[0]), 
+            "aeY":float(coord5[1]), 
             "start":int(i*step_size), 
             "active":1, 
             "color":"black", 
@@ -179,7 +212,8 @@ def main(session_key, config_file, segment_size, step_size):
             "kcolor5":color_dict[str(cluster_index5)], 
             "kcolor6":color_dict[str(cluster_index6)], 
             "kcolor7":color_dict[str(cluster_index7)], 
-            "kcolor8":color_dict[str(cluster_index8)]})
+            "kcolor8":color_dict[str(cluster_index8)],
+            "kcolor20":color_dict[str(cluster_index20)]})
         #data.append({"id":i, "tsneX":random.randint(1,99), "tsneY":random.randint(1,99), "pcaX":random.randint(1,99), "pcaY":random.randint(1,99), "start":int(i*step_size), "active":1, "color":"black"})
         i+=1
 
@@ -256,15 +290,14 @@ def retrain(valid_points, session_key, old_session_key, segment_size, step_size)
     # Run data through SOM
     som = True
     if som:
-        # som = MiniSom(25, 25, len(result[0]), sigma=0.3, learning_rate=0.1)
-        # som.train_random(new_result, 1000)
-        # Y3 = convert_range(np.array([np.array(som.winner(i)) for i in range(len(new_result))]))
-        print("SOM-grid-size: ", int(len(result)**0.5))
-        mapsize = [int(len(result)**0.5), int(len(result)**0.5)]
-        som = sompy.SOMFactory.build(result, mapsize, mask=None, mapshape='planar', lattice='rect', normalization='var', initialization='pca', neighborhood='gaussian', training='batch', name='sompy')  # this will use the default parameters, but i can change the initialization and neighborhood methods
+        print("SOM-grid-size: ", int(len(new_result)**0.5))
+        mapsize = [int(len(new_result)**0.5), int(len(new_result)**0.5)]
+        if mapsize[0] > 100:
+            mapsize = [100, 100]
+        som = sompy.SOMFactory.build(new_result, mapsize, mask=None, mapshape='planar', lattice='rect', normalization='var', initialization='pca', neighborhood='gaussian', training='batch', name='sompy')  # this will use the default parameters, but i can change the initialization and neighborhood methods
         som.train(n_job=1, verbose='info')  # verbose='debug' will print more, and verbose=None wont print anything
         #som_output = np.array([np.array([0, int(bmu)]) if int(bmu) < 10 else np.array([int(str(bmu)[0]), int(str(bmu)[1])]) for bmu in som._bmu[0]])
-        som_output = np.array(np.array([np.array(np.unravel_index(int(bmu), (int(len(result)**0.5),int(len(result)**0.5)))) for bmu in som._bmu[0]]))
+        som_output = np.array(np.array([np.array(np.unravel_index(int(bmu), (mapsize[0],mapsize[0]))) for bmu in som._bmu[0]]))
         Y3 = convert_range(som_output)
         print("SOM done")
     else:
@@ -278,26 +311,34 @@ def retrain(valid_points, session_key, old_session_key, segment_size, step_size)
     else:
         Y4 = convert_range(np.array([np.array([random.randint(-50, 50), random.randint(-50, 50)]) for i in range(len(Y2))]))
 
+    # Run data through autoencoder
+    ae = False
+    if ae:
+        Y5 = convert_range(AE(result))
+    else:
+        Y5 = convert_range(np.array([np.array([random.randint(-50, 50), random.randint(-50, 50)]) for i in range(len(Y2))]))
+    print("Autoencoder done")
+
     # K-means on raw features
-    kmeans2 = KMeans(n_clusters=2, random_state=0).fit(result)
+    kmeans2 = KMeans(n_clusters=2, random_state=0).fit(new_result)
     print("kmeans2 done")
-    kmeans3 = KMeans(n_clusters=3, random_state=0).fit(result)
+    kmeans3 = KMeans(n_clusters=3, random_state=0).fit(new_result)
     print("kmeans3 done")
-    kmeans4 = KMeans(n_clusters=4, random_state=0).fit(result)
+    kmeans4 = KMeans(n_clusters=4, random_state=0).fit(new_result)
     print("kmeans4 done")
-    kmeans5 = KMeans(n_clusters=5, random_state=0).fit(result)
+    kmeans5 = KMeans(n_clusters=5, random_state=0).fit(new_result)
     print("kmeans5 done")
-    kmeans6 = KMeans(n_clusters=6, random_state=0).fit(result)
+    kmeans6 = KMeans(n_clusters=6, random_state=0).fit(new_result)
     print("kmeans6 done")
-    kmeans7 = KMeans(n_clusters=7, random_state=0).fit(result)
+    kmeans7 = KMeans(n_clusters=7, random_state=0).fit(new_result)
     print("kmeans7 done")
-    kmeans8 = KMeans(n_clusters=8, random_state=0).fit(result)
+    kmeans8 = KMeans(n_clusters=8, random_state=0).fit(new_result)
     print("kmeans8 done")
 
     # Format t-SNE output to correct dictionary format
     data = []
     i = 0
-    for coord1, coord2, coord3, coord4, start_time, color, cluster_index2, cluster_index3, cluster_index4, cluster_index5, cluster_index6, cluster_index7, cluster_index8 in zip(Y1, Y2, Y3, Y4, start_times, colors, kmeans2.labels_, kmeans3.labels_, kmeans4.labels_, kmeans5.labels_, kmeans6.labels_, kmeans7.labels_, kmeans8.labels_):
+    for coord1, coord2, coord3, coord4, coord5, start_time, color, cluster_index2, cluster_index3, cluster_index4, cluster_index5, cluster_index6, cluster_index7, cluster_index8 in zip(Y1, Y2, Y3, Y4, Y5, start_times, colors, kmeans2.labels_, kmeans3.labels_, kmeans4.labels_, kmeans5.labels_, kmeans6.labels_, kmeans7.labels_, kmeans8.labels_):
         data.append({
             "id":i, 
             "tsneX":float(coord1[0]), 
@@ -308,6 +349,8 @@ def retrain(valid_points, session_key, old_session_key, segment_size, step_size)
             "somY":float(coord3[1]), 
             "umapX":float(coord4[0]), 
             "umapY":float(coord4[1]),
+            "aeX":float(coord5[0]), 
+            "aeY":float(coord5[1]), 
             "start":start_time, 
             "active":1, 
             "color":color, 
@@ -320,16 +363,6 @@ def retrain(valid_points, session_key, old_session_key, segment_size, step_size)
             "kcolor8":color_dict[str(cluster_index8)]})
         #data.append({"id":i, "tsneX":random.randint(1,99), "tsneY":random.randint(1,99), "pcaX":random.randint(1,99), "pcaY":random.randint(1,99), "start":int(i*step_size), "active":1, "color":"black"})
         i+=1
-
-    # # Format t-SNE output to correct dictionary format
-    # data = []
-    # i = 0
-
-
-    # for coord1, coord2, coord3, coord4, start_time, color in zip(Y1, Y2, Y3, Y4, start_times, colors):
-    #     data.append({"id":i, "tsneX":float(coord1[0]), "tsneY":float(coord1[1]), "pcaX":float(coord2[0]), "pcaY":float(coord2[1]), "somX":float(coord3[0]), "somY":float(coord3[1]), "umapX":float(coord4[0]), "umapY":float(coord4[1]), "start":start_time, "active":1, "color":color})
-    #     #data.append({"id":i, "tsneX":random.randint(1,99), "tsneY":random.randint(1,99), "pcaX":random.randint(1,99), "pcaY":random.randint(1,99), "start":int(i*step_size), "active":1, "color":"black"})
-    #     i+=1
 
     # Save data as csv to be able to load later
     keys = data[0].keys()
@@ -346,11 +379,7 @@ def retrain(valid_points, session_key, old_session_key, segment_size, step_size)
         dict_writer.writeheader()
         dict_writer.writerows(metadata)
 
-    #return data, audio_duration
-
 def convert_range(Y):
-    # print(Y.shape)
-    # return Y
     new_range = (80 - (-80))  
     Y_x = Y[:,0]
     

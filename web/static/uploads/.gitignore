@@ -1,3 +1,6 @@
 *
-*/
+!trump/
+!trump/*
+!podcast/
+!podcast/*
 !.gitignore

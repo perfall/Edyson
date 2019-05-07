@@ -157,5 +157,5 @@ def load_browser(session_key) -> str:
 
 if __name__ == '__main__':
     #app.run(debug=True)
-    app.run(host='0.0.0.0', debug=True, port=3134)
+    app.run(host='0.0.0.0', debug=False, port=3134)
 

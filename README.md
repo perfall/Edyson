@@ -1,6 +1,6 @@
 # Edyson - a tool for exploring audio quickly
 
-Edyson is a human-in-the-loop framework for exploring, and to some extent annotating, large amounts of audio efficiently. It uses the openSMILE feature extration tool and unsupervised machine learning to facilitate the user when browsing their data. The project is a prototypical work in progress and should by no means be viewed as a finished product.
+Edyson is a human-in-the-loop framework for exploring, and to some extent annotating, large amounts of audio efficiently. It uses the openSMILE feature extration tool and unsupervised machine learning to help the user browse and listen to their data. The project is a prototypical work in progress and should by no means be viewed as a finished product.
 
 Edyson is built on the idea of Temporally Disassembled Audio, as such it segments an audio file into short snippets of equal length and distributes them on a 2D map according to some chosen feature. See publications below for further information on this.
 
@@ -24,7 +24,7 @@ Navigate to localhost:3134, preferably using Chrome. You might need to zoom out 
 Before processing audio of your own I recommend testing out the included examples, choose one from the header tab. See functionality and controls [here](misc/cheatsheet.pdf).
 
 ## Process your audio
-Choose and audio file, wav or mp3. Select segment size (duration of snippet), step size (the duration between two consecutive), and features (currently only MFCC and mean-normalized MFCC). Click process audio.
+Choose an audio file, wav or mp3. Select segment size (duration of snippet), step size (the duration between two consecutive snippets), and features (currently only MFCC and mean-normalized MFCC). Click process audio.
 
 The time it takes for processing is mostly dependent on how many resulting datapoints are generated. As an example, an hour of audio with a segment size and step size of 1000ms (3600 datapoints) currently takes around 3 minutes on a maxed out 2016 MacBook Pro.
 

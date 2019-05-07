@@ -21,8 +21,8 @@ from sklearn.cluster import DBSCAN
 #from autoencoder import AE
 
 
-smilextract = '../opensmile-2.3.0/SMILExtract'
-config_dir = '../opensmile-2.3.0/config/'
+smilextract = '../opensmile/SMILExtract'
+config_dir = '../opensmile/config/'
 
 color_dict = {
     "-1": "black",

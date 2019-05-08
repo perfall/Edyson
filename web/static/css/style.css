@@ -1,5 +1,6 @@
 html, body {
   height: 95%;
+  font-size: 10px;
 }
 
 #content {
@@ -46,7 +47,7 @@ html, body {
     }
 
 #loading-sm {
-    width: 150px;
+    width: 100px;
     height: auto;
 }
 

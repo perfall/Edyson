@@ -358,13 +358,13 @@ $(document).ready(function () {
     $(document).keydown(function (ev) {
         if (ev.shiftKey) {
             shiftDown = true;
-            $("#startText").hide()
+            $(".startText").hide()
             $("#coloringText").show()
             $("#coloringMode").attr("stroke", categoryColor)
             $("#coloringMode").show()
         } else if (ev.ctrlKey) {
             ctrlDown = true;
-            $("#startText").hide()
+            $(".startText").hide()
             $("#listeningText").show()
             $("#listeningMode").show()
         } else if (ev.keyCode == 67 && categoryColor != "black") {

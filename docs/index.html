@@ -56,11 +56,11 @@
     </nav>
     <div class="container-fluid" id="content">
         <div class="row top-buffer side-buffer" id="row1">
-            <div class="col-sm-1">
+            <div class="col-1">
                 <h5>Annotation</h5>
                 <div>
                     <div class="buttonGroup1">
-                        <button type="button" value="black" class="btn-block btn btn-dark top-buffer-sm btn-sm">None (#0)</button>
+                        <button type="button" value="black" class="btn-block btn btn-dark top-buffer-xs btn-sm">None (#0)</button>
                     </div>
                     <div class="input-group top-buffer-xs">
                         <div class="input-group-prepend lockButton">
@@ -68,14 +68,14 @@
                             <i class="fa fa-unlock" aria-hidden="true"></i>
                             </button>
                         </div>
-                        <input type="text" id="blueLabel" class="form-control" value="label1">
+                        <input type="text" id="blueLabel" class="form-control" value="L1">
                         <div class="input-group-prepend colorAudioButton">
                             <button type="button" color="blue" value="silent" class="btn-block btn btn-light btn-sm">
                             <i class="categoryPlay fa fa-play" aria-hidden="true"></i>
                             </button>
                         </div>
                         <div class="input-group-prepend buttonGroup1">
-                            <button type="button" value="blue" class="btn-block btn btn-primary btn-sm">(#1)</button>
+                            <button type="button" value="blue" class="btn-block btn btn-primary btn-sm"></button>
                         </div>
                     </div>
                     <div class="input-group top-buffer-xs">
@@ -84,14 +84,14 @@
                             <i class="fa fa-unlock" aria-hidden="true"></i>
                             </button>
                         </div>
-                        <input type="text" id="greenLabel" class="form-control" value="label2">
+                        <input type="text" id="greenLabel" class="form-control" value="L2">
                         <div class="input-group-prepend colorAudioButton">
                             <button type="button" color="green" value="silent" class="btn-block btn btn-light btn-sm">
                             <i class="categoryPlay fa fa-play" aria-hidden="true"></i>
                             </button>
                         </div>
                         <div class="input-group-prepend buttonGroup1">
-                            <button type="button" value="green" class="btn-block btn btn-success btn-sm">(#2)</button>
+                            <button type="button" value="green" class="btn-block btn btn-success btn-sm"></button>
                         </div>
                     </div>
                     <div class="input-group top-buffer-xs">
@@ -100,14 +100,14 @@
                             <i class="fa fa-unlock" aria-hidden="true"></i>
                             </button>
                         </div>
-                        <input type="text" id="yellowLabel" class="form-control" value="label3">
+                        <input type="text" id="yellowLabel" class="form-control" value="L3">
                         <div class="input-group-prepend colorAudioButton">
                             <button type="button" color="yellow" value="silent" class="btn-block btn btn-light btn-sm">
                             <i class="categoryPlay fa fa-play" aria-hidden="true"></i>
                             </button>
                         </div>
                         <div class="input-group-prepend buttonGroup1">
-                            <button type="button" value="yellow" class="btn-block btn btn-warning btn-sm">(#3)</button>
+                            <button type="button" value="yellow" class="btn-block btn btn-warning btn-sm"></button>
                         </div>
                     </div>
                     <div class="input-group top-buffer-xs">
@@ -116,94 +116,81 @@
                             <i class="fa fa-unlock" aria-hidden="true"></i>
                             </button>
                         </div>
-                        <input type="text" id="redLabel" class="form-control" value="label4">
+                        <input type="text" id="redLabel" class="form-control" value="L4">
                         <div class="input-group-prepend colorAudioButton">
                             <button type="button" color="red" value="silent" class="btn-block btn btn-light btn-sm">
                             <i class="categoryPlay fa fa-play" aria-hidden="true"></i>
                             </button>
                         </div>
                         <div class="input-group-prepend buttonGroup1">
-                            <button type="button" value="red" class="btn-block btn btn-danger btn-sm">(#4)</button>
+                            <button type="button" value="red" class="btn-block btn btn-danger btn-sm"></button>
                         </div>
                     </div>
                 </div>
                 <div id="buttonGroup7">
-                    <button type="button" class="btn btn-block btn-dark top-buffer-sm btn-sm">Color all</button>
+                    <button type="button" class="btn btn-block btn-dark top-buffer-xs btn-sm">Color all</button>
                 </div>
-                <hr>
-                <h5>Algorithm</h5>
+                <h5 class="top-buffer-sm">Algorithm</h5>
                 <div class="buttonGroup2">
-                    <button type="button" value="tsne" class="btn btn-block btn-success top-buffer-sm btn-sm">t-SNE</button>
-                    <button type="button" value="pca" class="btn btn-block btn-dark top-buffer-sm btn-sm">PCA</button>
-                    <button type="button" value="som" class="btn btn-block btn-dark top-buffer-sm btn-sm">SOM</button>
-                    <button type="button" value="umap" class="btn btn-block btn-dark top-buffer-sm btn-sm">UMAP</button>
+                    <button type="button" value="tsne" class="btn btn-block btn-success btn-sm">t-SNE</button>
+                    <button type="button" value="pca" class="btn btn-block btn-dark btn-sm">PCA</button>
+                    <button type="button" value="som" class="btn btn-block btn-dark btn-sm">SOM</button>
+                    <button type="button" value="umap" class="btn btn-block btn-dark btn-sm">UMAP</button>
                     <!-- <button type="button" value="ae" class="btn btn-block btn-dark top-buffer-sm btn-sm">AutoEncoder</button> -->
                 </div>
-                <hr>
-                <h5>Cursor size</h5>
+                <h5 class="top-buffer-sm">Cursor size</h5>
                 <div id="buttonGroup3">
                     <button type="button" id = "buttonSize50" value="50" class="btn btn-dark">S</button>
                     <button type="button" id = "buttonSize100" value="100" class="btn btn-success">M</button>
                     <button type="button" id = "buttonSize150" value="150" class="btn btn-dark">L</button>
-                    <button type="button" id = "buttonSize300" value="300" class="btn btn-dark">XL</button>
+                    <!-- <button type="button" id = "buttonSize300" value="300" class="btn btn-dark">XL</button> -->
                 </div>
-                <hr>
-                <!-- <h5>Retrain colored points</h5>
-                <div id="buttonGroup5">
-                    <button type="button" value="mfcc1" class="btn btn-block btn-dark top-buffer-sm btn-sm">Run</button>
-                </div> -->
-                <hr>
-                <h5>Export</h5>
-                <div id="buttonGroup4">
-                    <button type="button" value="csv" class="btn btn-block btn-dark top-buffer-sm btn-sm">CSV</button>
+                <h5 class="top-buffer-sm">Export</h5> 
+                <div id="buttonGroup4"> 
+                    <button type="button" value="csv" class="btn btn-block btn-dark btn-sm">CSV</button>
                 </div>
-                <hr>
-                <h5>Median filter value</h5>
+                <h5 class="top-buffer-sm">Median filter</h5>
                 <div id="medianFilterValueBox">
-                    <input type="number" id="medianfilterValue" value=2>
+                    <input type="number" id="medianfilterValue" value=2 style="width: 100%">
                 </div>
             </div>
-            <div class="col-sm-10">
+            <div class="col-10">
                 <svg id="map">
                     <text id="loadText" x="50%" y="50%" text-anchor="middle" opacity="0.8" fill="black" font-size="100px" font-family="Arial" dy=".2em" style="display:none">Loading..</text>
-                    <text id="listeningText" x="50%" y="4%" text-anchor="middle" opacity="0.8" fill="black" font-size="60px" font-family="Arial" dy=".2em" style="display:none">Listening</text>
-                    <text id="coloringText" x="50%" y="4%" text-anchor="middle" opacity="0.8" fill="black" font-size="60px" font-family="Arial" dy=".2em" style="display:none">Coloring</text>
-                    <text id="startText" x="50%" y="4%" text-anchor="middle" opacity="0.8" fill="black" font-size="40px" font-family="Arial" dy=".2em">Hold Ctrl to listen and Shift to color</text>
+                    <text id="listeningText" x="50%" y="6%" text-anchor="middle" opacity="0.8" fill="black" font-size="30px" font-family="Arial" dy=".2em" style="display:none">Listening</text>
+                    <text id="coloringText" x="50%" y="6%" text-anchor="middle" opacity="0.8" fill="black" font-size="30px" font-family="Arial" dy=".2em" style="display:none">Coloring</text>
+                    <text id="startText" x="50%" y="4%" text-anchor="middle" opacity="0.8" fill="black" font-size="20px" font-family="Arial" dy=".2em">Hold Ctrl to listen and Shift to color</text>
                     <rect id="listeningMode"x="0%" y ="0%" stroke="black" stroke-dasharray="5" stroke-width="25" fill="none" width="100%" height="100%" style="display:none"></rect>
                     <rect id="coloringMode"x="0%" y ="0%" stroke="black" stroke-width="25" fill="none" width="100%" height="100%" style="display:none"></rect>
                 </svg>
             </div>
-            <div class="col-sm-1">
+            <div class="col-1">
                 <div id="metadata">
                     <h5>Metadata</h5>
                     <h6>Filename</h6>
-                    <p id="metaAudioPath">
                     <p>trump.wav</p>
-                    </p>
                     <h6>Duration</h6>
-                    <p id="metaDuration">
                     <p>3499s</p>
-                    </p>
                     <h6>Segment size</h6>
-                    <p>1000 ms</p>
+                    <p>1000ms</p>
                     <h6>Step size</h6>
-                    <p>1000 ms</p>
+                    <p>1000ms</p>
                     <h6>Datapoints</h6>
-                    <p>3499000</p>
+                    <p>3499</p>
                 </div>
-                <h5 class="top-buffer-sm">Sampling</h5>
-                <div id="buttonGroup8">
-                    <button type="button" value ="10" class="btn btn-dark top-buffer-sm btn-sm">10%</button>
-                    <button type="button" value ="2" class="btn btn-dark top-buffer-sm btn-sm">50%</button>
-                    <button type="button" value ="1" class="btn btn-success top-buffer-sm btn-sm">100%</button>
+               <h5 class="top-buffer-sm">Sampling</h5>
+                <div id="buttonGroup8" role="group">
+                    <button type="button" value ="10" class="btn btn-dark btn-sm">0.1</button>
+                    <button type="button" value ="2" class="btn btn-dark btn-sm">0.5</button>
+                    <button type="button" value ="1" class="btn btn-success btn-sm">1.0</button>
                 </div>
-                <div id="audioSettings" class="top-buffer">
-                    <h5>Audio settings</h5>
-                    <h6 id="launchSliderText" class="top-buffer-sm"></h6>
+                <h5 class="top-buffer-sm">Audio</h5>
+                <div id="audioSettings" class="">
+                    <h6 id="launchSliderText" class=""></h6>
                     <div class="slidecontainer">
                         <input type="range" min="10" max="1000" value="250" step="10" class="slider" id="launchSlider">
                     </div>
-                    <h6 id="fadeSliderText" class="top-buffer-sm"></h6>
+                    <h6 id="fadeSliderText" class="top-buffer-xs"></h6>
                     <div class="slidecontainer">
                         <input type="range" min="0" max="500" value="250" step="10" class="slider" id="fadeSlider">
                     </div>
@@ -220,12 +207,11 @@
                             <input type="range" min="50" max="3000" value="1500" step="50" class="slider" id="durationSlider" disabled>
                         </div> -->
                 </div>
-                <hr>
-                <h5>Sequential playback</h5>
+                <h5 class="top-buffer-sm">Sequential playback</h5>
                 <div id="buttonGroup6">
-                    <button type="button" value ="play" class="btn btn-block btn-dark top-buffer-sm btn-sm">Play</button>
-                    <button type="button" value ="pause" class="btn btn-block btn-dark top-buffer-sm btn-sm">Pause</button>
-                    <button type="button" value ="stop" class="btn btn-block btn-success top-buffer-sm btn-sm">Stop</button>
+                    <button type="button" value ="play" class="btn btn-dark btn-sm"><i class="fa fa-play" aria-hidden="true"></i></button>
+                    <button type="button" value ="pause" class="btn btn-dark btn-sm"><i class="fa fa-pause" aria-hidden="true"></i></button>
+                    <button type="button" value ="stop" class="btn btn-success btn-sm"><i class="fa fa-stop" aria-hidden="true"></i></button>
                 </div>
                 <div class="top-buffer-sm text-center">
                     <p id="loading-label">Audio loading...</p>
@@ -241,7 +227,7 @@
             <svg id="graphMap"></svg>
         </div>
         <audio id="audioBar"controls controlsList="nodownload" style="display:none">
-            <source src="trump.wav">
+            <source src="{{audioPath}}">
         </audio>
     </div>
     <script type="text/javascript">

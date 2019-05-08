@@ -1093,7 +1093,7 @@ $(document).ready(function () {
 
     var launchInterval = segmentSize / 5;
     $("#launchSlider").val(launchInterval);
-    $("#launchSliderText").text("Launch interval: " + launchInterval);
+    $("#launchSliderText").text("Interval: " + launchInterval);
 
     var fade = segmentSize / 4;
     $("#fadeSlider").val(fade);
@@ -1105,7 +1105,7 @@ $(document).ready(function () {
 
     $("#launchSlider").on("mousemove", function () {
         launchInterval = this.value;
-        $("#launchSliderText").text("Launch interval: " + launchInterval);
+        $("#launchSliderText").text("Interval: " + launchInterval);
     })
 
     $("#fadeSlider").on("mousemove", function () {

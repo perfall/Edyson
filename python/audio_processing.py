@@ -10,6 +10,7 @@ import wave
 import contextlib
 #from sklearn.manifold import TSNE
 from sklearn.decomposition import PCA
+from sklearn.manifold import Isomap
 from MulticoreTSNE import MulticoreTSNE as TSNE
 from pydub import AudioSegment
 import csv
@@ -160,13 +161,21 @@ def main(session_key, config_file, segment_size, step_size):
     else:
         Y4 = convert_range(np.array([np.array([random.randint(-50, 50), random.randint(-50, 50)]) for i in range(len(Y2))]))
 
+    # Run data through isomap
+    IM = Isomap(n_components=2)
+    Y5 = convert_range(IM.fit_transform(result))
+    print("Isomap done")
+
+    # Experiment with autoencoder, bad results so commented for now
     # Run data through autoencoder
-    ae = False
-    if ae:
-        Y5 = convert_range(AE(result))
-    else:
-        Y5 = convert_range(np.array([np.array([random.randint(-50, 50), random.randint(-50, 50)]) for i in range(len(Y2))]))
-    print("Autoencoder done")
+    # ae = False
+    # if ae:
+    #     Y5 = convert_range(AE(result))
+    # else:
+    #     Y5 = convert_range(np.array([np.array([random.randint(-50, 50), random.randint(-50, 50)]) for i in range(len(Y2))]))
+    # print("Autoencoder done")
+
+
 
     # K-means on raw features
     kmeans2 = KMeans(n_clusters=2, random_state=0).fit(result)

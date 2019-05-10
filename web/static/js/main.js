@@ -473,7 +473,7 @@ $(document).ready(function () {
                     return d3.select(this).style("fill") == col
                 })
             allPoints.classed("activePoint", false);
-            allPoints.style("fill-opacity", 0.1);
+            allPoints.style("fill-opacity", 0.025);
 
             rectBars = d3.selectAll(".rectBar")
                 .filter(function (d) {
@@ -491,7 +491,7 @@ $(document).ready(function () {
                     return d3.select(this).style("fill") == col
                 })
             allPoints.classed("activePoint", true);
-            allPoints.style("fill-opacity", 0.5);
+            allPoints.style("fill-opacity", $("#snippetOpacity").val());
 
             rectsBars = d3.selectAll(".rectBar")
                 .filter(function (d) {
@@ -527,9 +527,27 @@ $(document).ready(function () {
             $("i", this).removeClass("fa-stop");
             $("i", this).addClass('fa-play')
         }
-
-
     });
+
+    $("#snippetPropertiesGroup button").on("click", function () {
+        if(this.value == "minusOpacity" & parseFloat($("#snippetOpacity").val()) > 0.1){
+            $("#snippetOpacity").val((parseFloat($("#snippetOpacity").val()) - 0.1).toFixed(1))
+            d3.selectAll(".activePoint").style("fill-opacity", $("#snippetOpacity").val())
+        }
+        else if(this.value == "plusOpacity" & $("#snippetOpacity").val() < 1 ){
+            $("#snippetOpacity").val((parseFloat($("#snippetOpacity").val()) + 0.1).toFixed(1))
+            d3.selectAll(".activePoint").style("fill-opacity", $("#snippetOpacity").val())
+        }
+        else if(this.value == "minusRadius" & $("#snippetRadius").val() > 1){
+            $("#snippetRadius").val(parseFloat($("#snippetRadius").val()) - 1)
+            d3.selectAll(".dot").style("r", $("#snippetRadius").val())
+        }
+        else if(this.value == "plusRadius" & $("#snippetRadius").val() < 25) {
+            $("#snippetRadius").val(parseFloat($("#snippetRadius").val()) + 1)
+            d3.selectAll(".dot").style("r", $("#snippetRadius").val())
+        }
+    })
+
 
 
     // Change algorithm, and therefor coords
@@ -1195,6 +1213,10 @@ $(document).ready(function () {
     setInterval(playSegments, 1000);
     setInterval(updateTimeBar, stepSize);
 
+    // Fix for not collapsing snippetProperties dropdown when clicking on +/-
+    $('.nonCollapsableDropdown').click(function(e) {
+        e.stopPropagation();
+    });
 
 })
 

@@ -57,6 +57,41 @@
                     <button type="button" value="kcolor20" class="btn-block btn btn-light btn-sm">20</button>
                 </div>
             </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" style='color:white' href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Datapoints
+                </a>
+                <div class="dropdown-menu nonCollapsableDropdown"  aria-labelledby="navbarDropdown" id="snippetPropertiesGroup">
+                    <h6>Radius</h6>
+                    <div class="input-group top-buffer-xs">
+                        <div class="input-group-prepend lockButton">
+                            <button type="button" color="blue" value="minusRadius" class="btn-block btn btn-dark btn-sm">
+                            <i class="fa fa-minus" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <input type="text" id="snippetRadius" class="form-control" value="12">
+                        <div class="input-group-prepend lockButton">
+                            <button type="button" color="blue" value="plusRadius" class="btn-block btn btn-dark btn-sm">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <h6 class="top-buffer-xs">Opacity</h6>
+                    <div class="input-group top-buffer-xs">
+                        <div class="input-group-prepend lockButton">
+                            <button type="button" color="blue" value="minusOpacity" class="btn-block btn btn-dark btn-sm">
+                            <i class="fa fa-minus" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                        <input type="text" id="snippetOpacity" class="form-control" value="0.5">
+                        <div class="input-group-prepend lockButton">
+                            <button type="button" color="blue" value="plusOpacity" class="btn-block btn btn-dark btn-sm">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </li>
         </ul>
         <a class="nav-link" id="keyLink" style='color:white'>ID: {{session_key}}</a>
         <form class="form-inline my-2 my-lg-0" action="goByKey" method="POST" enctype=multipart/form-data>
@@ -146,7 +181,7 @@
                     <button type="button" value="pca" class="btn btn-block btn-dark btn-sm">PCA</button>
                     <button type="button" value="som" class="btn btn-block btn-dark btn-sm">SOM</button>
                     <button type="button" value="umap" class="btn btn-block btn-dark btn-sm">UMAP</button>
-                    <!-- <button type="button" value="ae" class="btn btn-block btn-dark top-buffer-sm btn-sm">AutoEncoder</button> -->
+                    <button type="button" value="ae" class="btn btn-block btn-dark top-buffer-sm btn-sm">Isomap</button>
                 </div>
                 <h5 class="top-buffer-sm">Cursor size</h5>
                 <div id="buttonGroup3">

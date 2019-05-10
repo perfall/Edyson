@@ -94,8 +94,8 @@ $(document).ready(function () {
 
     // Add rect, container of points
     map.append("rect")
-        .attr("width", $("#map").width())
-        .attr("height", $("#map").height())
+        .attr("width", "100%")
+        .attr("height", "100%")
         .style("fill", "none")
         .style("pointer-events", "all")
         .style("stroke-width", 4)
@@ -531,7 +531,25 @@ $(document).ready(function () {
 
     });
 
-
+    $("#snippetPropertiesGroup button").on("click", function () {
+        if(this.value == "minusOpacity" & parseFloat($("#snippetOpacity").val()) > 0.1){
+            $("#snippetOpacity").val((parseFloat($("#snippetOpacity").val()) - 0.1).toFixed(1))
+            d3.selectAll(".activePoint").style("fill-opacity", $("#snippetOpacity").val())
+        }
+        else if(this.value == "plusOpacity" & $("#snippetOpacity").val() < 1 ){
+            $("#snippetOpacity").val((parseFloat($("#snippetOpacity").val()) + 0.1).toFixed(1))
+            d3.selectAll(".activePoint").style("fill-opacity", $("#snippetOpacity").val())
+        }
+        else if(this.value == "minusRadius" & $("#snippetRadius").val() > 1){
+            $("#snippetRadius").val(parseFloat($("#snippetRadius").val()) - 1)
+            d3.selectAll(".dot").style("r", $("#snippetRadius").val())
+        }
+        else if(this.value == "plusRadius" & $("#snippetRadius").val() < 25) {
+            $("#snippetRadius").val(parseFloat($("#snippetRadius").val()) + 1)
+            d3.selectAll(".dot").style("r", $("#snippetRadius").val())
+        }
+    })
+    
     // Change algorithm, and therefor coords
     $(".buttonGroup2 button").on("click", function () {
         $(".buttonGroup2 button").removeClass("btn-dark")
@@ -1195,6 +1213,10 @@ $(document).ready(function () {
     setInterval(playSegments, 1000);
     setInterval(updateTimeBar, stepSize);
 
+    // Fix for not collapsing snippetProperties dropdown when clicking on +/-
+    $('.nonCollapsableDropdown').click(function(e) {
+        e.stopPropagation();
+    });
 
 })
 

@@ -6,7 +6,7 @@ Edyson is a human-in-the-loop framework for exploring, and to some extent annota
 
 Edyson is built on the idea of Temporally Disassembled Audio, as such it segments an audio file into short snippets of equal length and distributes them on a 2D map according to some chosen feature. See publications below for further information on this.
 
-![](tda_animation.gif)
+![](misc/gifs/tda_animation.gif)
 
 ## Getting started
 Clone the repository and install the requirements. Tested on python 3.6:

@@ -2,9 +2,11 @@
 
 Edyson is a human-in-the-loop framework for exploring, and to some extent annotating, large amounts of audio efficiently. It uses the openSMILE feature extration tool and unsupervised machine learning to help the user browse and listen to their data. The project is a prototypical work in progress and should by no means be viewed as a finished product.
 
+[ONLINE DEMO](https://perfall.github.io/Edyson/index.html) (use Chrome)
+
 Edyson is built on the idea of Temporally Disassembled Audio, as such it segments an audio file into short snippets of equal length and distributes them on a 2D map according to some chosen feature. See publications below for further information on this.
 
-[ONLINE DEMO](https://perfall.github.io/Edyson/index.html) (use Chrome)
+![](tda_animation.gif)
 
 ## Getting started
 Clone the repository and install the requirements. Tested on python 3.6:

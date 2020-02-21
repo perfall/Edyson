@@ -29,6 +29,9 @@ $(document).ready(function () {
     // Set variabel for graphPoints
     var graphPoints = "";
 
+    // Set timer experiment timer variable
+    var experimentTimer = -1000
+
     // Set dict for centroids
     centroids = {};
 
@@ -636,6 +639,12 @@ $(document).ready(function () {
 
     });
 
+    $("#buttonGroup10 button").on("click", function () {
+        setInterval(startExperimentTimer, 1000 * $("#experimentTimerInterval").val());
+        experimentTimer = 0;
+        $("#buttonGroup10 button").prop("disabled", true)
+    });
+
     $("#graphMap").on("click", function () {
         updateGraph();
     })
@@ -971,7 +980,15 @@ $(document).ready(function () {
 
             var csvString = csvRows.join('\r\n');
             downloadString(csvString, "text", "labels.txt")
+
+            experimentTimer = experimentTimer + 10
+            console.log(experimentTimer)
+            if (experimentTimer == 300){
+                console.log("STOP EXPERIMETN")
+            }
         }
+
+        
     }
 
     function updateGraph(color, centroidX, centroidY) {
@@ -1217,6 +1234,12 @@ $(document).ready(function () {
     $('.nonCollapsableDropdown').click(function(e) {
         e.stopPropagation();
     });
+
+    function startExperimentTimer() {
+        arrayToCSV();
+        console.log("downloading")
+    }    
+    
 
 })
 

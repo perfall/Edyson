@@ -20,7 +20,9 @@ import umap
 from sklearn.cluster import KMeans
 from sklearn.cluster import DBSCAN
 #from autoencoder import AE
-
+from scipy import signal
+import scipy.io.wavfile as wavfile
+from sklearn.decomposition import TruncatedSVD
 
 smilextract = '../opensmile/SMILExtract'
 config_dir = '../opensmile/config/'
@@ -85,7 +87,10 @@ def main(session_key, config_file, segment_size, step_size):
         wav_audio.export(audio_path, format="wav")
     
     # Get metadata
-    audio_duration = len(AudioSegment.from_wav(audio_path))
+    loaded_sound = AudioSegment.from_wav(audio_path)
+    audio_duration = len(loaded_sound)
+    frame_rate = loaded_sound.frame_rate
+
 
     # If duration is longer than 1 hour, segment into chunks
     if audio_duration > 3600000:
@@ -104,19 +109,33 @@ def main(session_key, config_file, segment_size, step_size):
     subprocess.call(["mkdir", output_dir])
     output_path = output_dir + audio_name.split(".")[0] + ".mfcc.htk"
 
-    # Prepend path to config file
-    config_file = config_dir + config_file
+    if config_file == "spectrogram":
+        waveform = wavfile.read(audio_path)[1]
+        print(frame_rate)
+        print(segment_size)
+        print(int(frame_rate*segment_size))
+        f, t, Sxx = signal.spectrogram(waveform, fs=frame_rate, nperseg=int(frame_rate*(segment_size/10000)), noverlap=0)
+        Sxx_transpose = Sxx.transpose()
+        print("scipy shape: ", Sxx_transpose.shape)
 
-    # Update config file with segment- and steplength, divided by 1000 to get second-format
-    update_config(config_file, str(segment_size/10000), str(step_size/10000))
+        # Reduce dimensionality to 39 with svd
+        svd = TruncatedSVD(n_components=39)
+        result = svd.fit_transform(Sxx_transpose)
+        print("scipy shape2: ", result.shape)
+    else:
+        # Prepend path to config file
+        config_file = config_dir + config_file
 
-    # Run opensmile to output features in output dir
-    subprocess.call([smilextract, "-C", config_file, "-I", audio_path, "-O", output_path])
+        # Update config file with segment- and steplength, divided by 1000 to get second-format
+        update_config(config_file, str(segment_size/10000), str(step_size/10000))
 
-    # Read file, and return formatted data
-    htk_reader = HTKFile()
-    htk_reader.load(output_path)
-    result = np.array(htk_reader.data)
+        # Run opensmile to output features in output dir
+        subprocess.call([smilextract, "-C", config_file, "-I", audio_path, "-O", output_path])
+
+        # Read file, and return formatted data
+        htk_reader = HTKFile()
+        htk_reader.load(output_path)
+        result = np.array(htk_reader.data)
     
     # Flatten concatenate ten vectors at a time, resulting in 39*10 dimensionality per snippet
     new_result = []

@@ -944,7 +944,7 @@ $(document).ready(function () {
 
         } else {
             twoDiArray = [
-                ["id", "startTime(ms)", "label", "color", "tsneX", "tsneY", "umapX", "umapY", "somX", "somY"]
+                ["id", "startTime(ms)", "label", "color"]//, "tsneX", "tsneY", "umapX", "umapY", "somX", "somY"]
             ]
 
             for (var i = 0; i < data.length; ++i) {
@@ -962,13 +962,13 @@ $(document).ready(function () {
                         currentLabel = $("#" + currentColor + "Label").val()
                     }
                 }
-                currentTsneX = data[i]["tsneX"]
-                currentTsneY = data[i]["tsneY"]
-                currentUmapX = data[i]["umapX"]
-                currentUmapY = data[i]["umapY"]
-                currentSomX = data[i]["somX"]
-                currentSomY = data[i]["somY"]
-                twoDiArray.push([currentId, currentSt, currentLabel, currentColor, currentTsneX, currentTsneY, currentUmapX, currentUmapY, currentSomX, currentSomY])
+                // currentTsneX = data[i]["tsneX"]
+                // currentTsneY = data[i]["tsneY"]
+                // currentUmapX = data[i]["umapX"]
+                // currentUmapY = data[i]["umapY"]
+                // currentSomX = data[i]["somX"]
+                // currentSomY = data[i]["somY"]
+                twoDiArray.push([currentId, currentSt, currentLabel, currentColor])//, currentTsneX, currentTsneY, currentUmapX, currentUmapY, currentSomX, currentSomY])
 
             }
 

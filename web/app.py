@@ -137,7 +137,7 @@ def load_browser(session_key) -> str:
             chunks = metadata["chunks"]
             #chunks = "../" + metadata["audio_path"]
         except:
-            chunks = "../" + metadata["audio_path"]
+            chunks = os.path.join(os.path.dirname(__file__), "..", metadata["audio_path"])
         #chunks = re.sub("\[|\]|\,\'", "", metadata["chunks"]).split()
         print(chunks)
         print(type(chunks))
@@ -149,7 +149,7 @@ def load_browser(session_key) -> str:
                                 stepSize=metadata["step_size"],
                                 datapoints=len(data),
                                 session_key=session_key, 
-                                audioPath="../" + metadata["audio_path"],
+                                audioPath=metadata["audio_path"],
                                 audioPaths = chunks,
                                 examples = examples)
     else:

@@ -27,6 +27,10 @@ Navigate to localhost:3134, preferably using Chrome. You might need to zoom out 
 
 Before processing audio of your own I recommend testing out the included examples, choose one from the header tab. See functionality and controls [here](misc/cheatsheet.pdf).
 
+### Docker
+
+Alternatively, to run the app using Docker, first [install Docker](https://docs.docker.com/get-docker/) and clone this repo (`git clone https://github.com/perfall/Edyson.git`). Then build your image by running `docker build -t edyson .` from the root of the cloned repo. Then you can start a container with your image by running `docker run -d --name edyson -p 3134:3134 edyson`.
+
 ## Process your audio
 Choose an audio file, wav or mp3. Select segment size (duration of snippet), step size (the duration between two consecutive snippets), and features (currently only MFCC and mean-normalized MFCC). Click process audio.
 

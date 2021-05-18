@@ -24,8 +24,9 @@ from scipy import signal
 import scipy.io.wavfile as wavfile
 from sklearn.decomposition import TruncatedSVD
 
-smilextract = '../opensmile/SMILExtract'
-config_dir = '../opensmile/config/'
+smilextract = os.path.join(os.path.dirname(__file__), '..', 'opensmile', 'bin', 'SMILExtract')
+config_dir = os.path.join(os.path.dirname(__file__), '..', 'opensmile', 'config', 'mfcc')
+static_dir = os.path.join(os.path.dirname(__file__), '..', 'web', 'static')
 
 color_dict = {
     "-1": "black",
@@ -72,13 +73,13 @@ def update_config(config_file, segment_size, step_size):
     
 def main(session_key, config_file, segment_size, step_size):    
     # Get audiofilename
-    audio_dir = "static/uploads/" + session_key + "/"
+    audio_dir = os.path.join(static_dir, "uploads", session_key)
     for file_name in os.listdir(audio_dir):
         if file_name[0] != ".":
             audio_name = file_name
             break
     # Get full path
-    audio_path = audio_dir + file_name
+    audio_path = os.path.join(audio_dir, file_name)
 
     # If mp3, convert to wav
     if audio_path[-3:] == "mp3":
@@ -97,17 +98,17 @@ def main(session_key, config_file, segment_size, step_size):
         chunks = []
         chunk_start_time = 0
         while chunk_start_time * 1000 < audio_duration:
-            subprocess.call(["sox", audio_path, audio_dir + str(int((chunk_start_time / 3600)+1)) + ".wav", "trim", str(chunk_start_time), "3600"])
-            chunks.append(audio_dir + str(int((chunk_start_time / 3600)+1)) + ".wav")
+            subprocess.call(["sox", os.path.relpath(audio_path, os.path.join(static_dir, '..')), os.path.join(audio_dir, str(int((chunk_start_time / 3600)+1)) + ".wav"), "trim", str(chunk_start_time), "3600"])
+            chunks.append(os.path.join(audio_dir, str(int((chunk_start_time / 3600)+1)) + ".wav"))
             chunk_start_time += 3600
     else:
-        chunks = [audio_path]
+        chunks = [os.path.relpath(audio_path, os.path.join(static_dir, '..'))]
 
 
     # Create dir for ouput and set filenames
-    output_dir = "static/data/" + session_key + "/"
+    output_dir = os.path.join(static_dir, "data", session_key)
     subprocess.call(["mkdir", output_dir])
-    output_path = output_dir + audio_name.split(".")[0] + ".mfcc.htk"
+    output_path = os.path.join(output_dir, audio_name.split(".")[0] + ".mfcc.htk")
 
     if config_file == "spectrogram":
         waveform = wavfile.read(audio_path)[1]
@@ -124,12 +125,13 @@ def main(session_key, config_file, segment_size, step_size):
         print("scipy shape2: ", result.shape)
     else:
         # Prepend path to config file
-        config_file = config_dir + config_file
+        config_file = os.path.join(config_dir, config_file)
 
         # Update config file with segment- and steplength, divided by 1000 to get second-format
         update_config(config_file, str(segment_size/10000), str(step_size/10000))
 
         # Run opensmile to output features in output dir
+        print(output_path)
         subprocess.call([smilextract, "-C", config_file, "-I", audio_path, "-O", output_path])
 
         # Read file, and return formatted data
@@ -247,15 +249,15 @@ def main(session_key, config_file, segment_size, step_size):
 
     # Save data as csv to be able to load later
     keys = data[0].keys()
-    with open(output_dir + "data.csv", 'w') as output_file:
+    with open(os.path.join(output_dir, "data.csv"), 'w') as output_file:
         dict_writer = csv.DictWriter(output_file, keys)
         dict_writer.writeheader()
         dict_writer.writerows(data)
 
     # Save metadata as csv to be able to load later
-    metadata = [{"audio_duration":audio_duration, "audio_path":audio_path, "segment_size":segment_size, "step_size":step_size, "chunks":",".join(chunks)}]
+    metadata = [{"audio_duration":audio_duration, "audio_path": os.path.relpath(audio_path, os.path.join(static_dir, '..')), "segment_size":segment_size, "step_size":step_size, "chunks":",".join(chunks)}]
     keys = metadata[0].keys()
-    with open(output_dir + "metadata.csv", 'w') as output_file:
+    with open(os.path.join(output_dir, "metadata.csv"), 'w') as output_file:
         dict_writer = csv.DictWriter(output_file, keys)
         dict_writer.writeheader()
         dict_writer.writerows(metadata)
@@ -264,13 +266,13 @@ def main(session_key, config_file, segment_size, step_size):
 
 def retrain(valid_points, session_key, old_session_key, segment_size, step_size):    
     # Get audiofilename
-    audio_dir = "static/uploads/" + session_key + "/"
+    audio_dir = os.path.join(static_dir, "uploads", session_key)
     for file_name in os.listdir(audio_dir):
         if file_name[0] != ".":
             audio_name = file_name
             break
     # Get full path
-    audio_path = audio_dir + file_name
+    audio_path = os.path.join(audio_dir, file_name)
 
     # If mp3, convert to wav
     if audio_path[-3:] == "mp3":
@@ -282,12 +284,12 @@ def retrain(valid_points, session_key, old_session_key, segment_size, step_size)
     audio_duration = len(AudioSegment.from_wav(audio_path))
 
     # Create dir for ouput and set filenames
-    output_dir = "static/data/" + session_key + "/"
+    output_dir = os.path.join(static_dir, "data", session_key)
     subprocess.call(["mkdir", output_dir])
 
     # Copy audio
-    path_to_old_htk = "static/data/" + old_session_key + "/" + audio_name.split(".")[0] + ".mfcc.htk"
-    path_to_new_htk = "static/data/" + session_key + "/" + audio_name.split(".")[0] + ".mfcc.htk"
+    path_to_old_htk = os.path.join(static_dir, "data", old_session_key, audio_name.split(".")[0] + ".mfcc.htk")
+    path_to_new_htk = os.path.join(static_dir, "data", session_key, audio_name.split(".")[0] + ".mfcc.htk")
     subprocess.call(["cp", path_to_old_htk, path_to_new_htk])
 
     # Read file, and return formatted data
@@ -394,15 +396,15 @@ def retrain(valid_points, session_key, old_session_key, segment_size, step_size)
 
     # Save data as csv to be able to load later
     keys = data[0].keys()
-    with open(output_dir + "data.csv", 'w') as output_file:
+    with open(os.path.join(output_dir, "data.csv"), 'w') as output_file:
         dict_writer = csv.DictWriter(output_file, keys)
         dict_writer.writeheader()
         dict_writer.writerows(data)
 
     # Save metadata as csv to be able to load later
-    metadata = [{"audio_duration":audio_duration, "audio_path":audio_path, "segment_size":segment_size, "step_size":step_size}]
+    metadata = [{"audio_duration":audio_duration, "audio_path": os.path.relpath(audio_path, os.path.join(static_dir, '..')), "segment_size":segment_size, "step_size":step_size}]
     keys = metadata[0].keys()
-    with open(output_dir + "metadata.csv", 'w') as output_file:
+    with open(os.path.join(output_dir, "metadata.csv"), 'w') as output_file:
         dict_writer = csv.DictWriter(output_file, keys)
         dict_writer.writeheader()
         dict_writer.writerows(metadata)

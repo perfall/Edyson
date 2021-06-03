@@ -3,6 +3,7 @@
 Edyson is a human-in-the-loop framework for exploring, and to some extent annotating, large amounts of audio efficiently. It uses the openSMILE feature extration tool and unsupervised machine learning to help the user browse and listen to their data. The project is a prototypical work in progress and should by no means be viewed as a finished product.
 
 [ONLINE DEMO](https://perfall.github.io/Edyson/index.html) (use Chrome)
+
 [VIDEO](https://youtu.be/3reUtg54hYM)
 
 

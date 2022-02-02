@@ -42,7 +42,14 @@ The time it takes for processing is mostly dependent on how many resulting datap
 The processed audio can be stored to avoid having to process it a second time. Simply take a note of the ID in the end of the url, alternatively add it to the "examples.txt" file for convenient access.
 
 ## Publications
-[How to annotate 100 hours in 45 minutes](https://www.isca-speech.org/archive/Interspeech_2019/pdfs/1648.pdf)
+
+[Human-in-the-Loop Efficiency Analysis for Binary Classification in Edyson](https://drive.google.com/file/d/15TgSMjUoAlJF3hS2pYE6mYkXQLV-Z7Pp/view)
+
+[Speech technology for swedish: Current impact areas for applications and edyson, an innovative tool for accessing speech data](https://lt4all.elra.info/proceedings/lt4all2019/pdf/2019.lt4all-1.1.pdf)
+
+[How to annotate 100 hours in 45 minutes](https://www.isca-speech.org/archive/Interspeech_2019/pdfs/1648.pdf) (good start)
+
+[Towards fast browsing of found audio data: 11 presidents](https://cst.dk/DHN2019Pro/papers/11_2018-dhn-fallgrenmmae-final.pdf)
 
 [Bringing Order to Chaos: A Non-Sequential Approach for Browsing Large Sets of Found Audio Data](https://www.aclweb.org/anthology/L18-1680) (early version of the method)
 
